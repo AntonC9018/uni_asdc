@@ -1,0 +1,1 @@
+#define report_error(string, ...) fprintf((stderr), (string), __VA_ARGS__), exit(-1)

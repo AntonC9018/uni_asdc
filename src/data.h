@@ -44,10 +44,11 @@ inline bool compare_record(Record a, Record b)
 void destroy_record(Record* record);
 
 Gender deserialize_gender(const char* gender_token);
-void serialize_gender(FILE* file, Gender gender);
-void serialize_ip_address(FILE* file, Ip_Address ip);
+void serialize_gender(Gender gender, FILE* file = stdout);
+void serialize_ip_address(Ip_Address ip, FILE* file = stdout);
 Ip_Address deserialize_ip_address(const char* ip_token);
 Record deserialize_record(char* buffer);
-void serialize_record(FILE* file, Record record);
+void serialize_record(const Record* record, FILE* file = stdout);
 std::vector<Record> read_records_from_csv(const char* fname);
-void destroy_records(const std::vector<Record>& records);
+void destroy_record(Record* record);
+void destroy_records(std::vector<Record>& records);

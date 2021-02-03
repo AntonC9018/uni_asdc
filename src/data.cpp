@@ -23,7 +23,7 @@ Gender deserialize_gender(const char* gender_token)
     }
 }
 
-void serialize_gender(FILE* file, Gender gender)
+void serialize_gender(Gender gender, FILE* file)
 {
     if (gender == MALE)
     {
@@ -39,7 +39,7 @@ void serialize_gender(FILE* file, Gender gender)
     }
 }
 
-void serialize_ip_address(FILE* file, Ip_Address ip)
+void serialize_ip_address(Ip_Address ip, FILE* file)
 {
     u32 temp = ip;
     for (int i = 0; i < 4; i++)
@@ -88,19 +88,19 @@ Record deserialize_record(char* buffer)
     return record;
 }
 
-void serialize_record(FILE* file, Record record)
+void serialize_record(const Record* record, FILE* file)
 {
-    fprintf(file, "%u", record.id);
+    fprintf(file, "%u", record->id);
     fputc(',', file);
-    fputs(record.first_name, file); 
+    fputs(record->first_name, file); 
     fputc(',', file);
-    fputs(record.last_name, file); 
+    fputs(record->last_name, file); 
     fputc(',', file);
-    fputs(record.email, file);
+    fputs(record->email, file);
     fputc(',', file);
-    serialize_gender(file, record.gender);
+    serialize_gender(record->gender, file);
     fputc(',', file);
-    serialize_ip_address(file, record.ip_address);
+    serialize_ip_address(record->ip_address, file);
     fprintf(file, "\n");
 }
 
@@ -120,6 +120,8 @@ std::vector<Record> read_records_from_csv(const char* fname)
     {
         result.push_back(deserialize_record(buffer));
     }
+    
+    fclose(file);
 
     return std::move(result);
 }

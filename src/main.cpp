@@ -10,6 +10,8 @@
 #include "search/binary.h"
 #include "search/exponential.h"
 
+#include "ds/binary_tree.h"
+
 void profile();
 
 int main()
@@ -22,11 +24,19 @@ int main()
     serialize_record(record);
 
     Record* record2 = exponential_search(records_ordered, 79); 
-    serialize_record(record);
+    serialize_record(record2);
+
+    using namespace DS;
+    Binary_Tree* t = NULL;
+
+    for (auto& record : records)
+    {
+        insert(&t, &record, [](auto a, auto b) { return (s32)a->id - (s32)b->id; });
+    }
+    print(t);
 
     destroy_records(records);
     destroy_records(records_ordered);
-    
     // profile();
 }
 

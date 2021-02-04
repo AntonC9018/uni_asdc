@@ -1,3 +1,3 @@
 @echo off
 
-g++ ./src/main.cpp ./src/data.cpp -I../includes
+g++ -std=c++14 ./src/main.cpp ./src/data.cpp -I../includes

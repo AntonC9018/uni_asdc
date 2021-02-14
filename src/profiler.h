@@ -24,8 +24,8 @@ inline void profiler_stop(Profiler* profiler = &_std_profiler)
 
 inline void profiler_print(FILE* file = stdout, Profiler* profiler = &_std_profiler)
 {
-    fprintf(file, "Number of iterations: %u\nTime elapsed: %u (ms)\n", 
-        profiler->num_iters, profiler->time_elapsed / (CLOCKS_PER_SEC / 1000));
+    fprintf(file, "Number of iterations: %u\nTime elapsed: %lu (ms)\n", 
+        profiler->num_iters, (u32)profiler->time_elapsed / (CLOCKS_PER_SEC / 1000));
 }
 
 inline void profiler_report_nicely(FILE* file = stdout, Profiler* profiler = &_std_profiler)

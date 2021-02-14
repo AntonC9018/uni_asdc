@@ -5,15 +5,15 @@
 #include "../profiler.h"
 
 Record* binary_search(
-    std::vector<Record>& records, u64 search_id, Profiler* profiler = &_std_profiler)
+    std::vector<Record>& records, size_t search_id, Profiler* profiler = &_std_profiler)
 {
-    u64 start = 0;
-    u64 end = records.size();
-    profiler->num_iters = 0;
+    size_t start = 0;
+    size_t end = records.size();
+
     while (true)
     {    
         profiler->num_iters++;
-        u64 current = (end + start) / 2;
+        size_t current = (end + start) / 2;
 
         if (records[current].id == search_id)
         {

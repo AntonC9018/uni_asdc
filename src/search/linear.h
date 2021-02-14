@@ -6,7 +6,7 @@
 #include "../profiler.h"
 
 Record* linear_search(
-    std::vector<Record>& records, u64 search_id, Profiler* profiler = &_std_profiler)
+    std::vector<Record>& records, size_t search_id, Profiler* profiler = &_std_profiler)
 {
     for (auto& record : records)
     {

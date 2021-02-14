@@ -5,14 +5,14 @@
 #include "../profiler.h"
 
 Record* exponential_search(
-    std::vector<Record>& records, u64 search_id, Profiler* profiler = &_std_profiler)
+    std::vector<Record>& records, size_t search_id, Profiler* profiler = &_std_profiler)
 {
     if (records[0].id == search_id)
         return &records[0];
 
-    u64 end = records.size();
-    u64 c = 0;
-    u64 i = 1;
+    size_t end = records.size();
+    size_t c = 0;
+    size_t i = 1;
 
     while (c < end)
     {

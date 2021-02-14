@@ -8,7 +8,7 @@
 
 #include <mydefines.h>
 #include "string_util.h"
-#include "errors.h"
+#include <strlib.h>
 
 enum Gender
 {
@@ -24,9 +24,9 @@ typedef u32 Ip_Address;
 struct Record
 {
     u32 id;
-    const char* first_name;
-    const char* last_name;
-    const char* email;
+    str_t first_name;
+    str_t last_name;
+    str_t email;
     Gender gender;
     Ip_Address ip_address;
 };
@@ -34,9 +34,9 @@ struct Record
 inline bool compare_record(Record a, Record b)
 {
     return a.id == b.id
-        && strcmp(a.first_name, b.first_name) == 0
-        && strcmp(a.last_name, b.last_name) == 0
-        && strcmp(a.email, b.email) == 0
+        && str_compare(str_view(a.first_name), str_view(b.first_name)) == 0
+        && str_compare(str_view(a.last_name),  str_view(b.last_name))  == 0
+        && str_compare(str_view(a.email),      str_view(b.email))      == 0
         && a.gender == b.gender
         && a.ip_address == b.ip_address;
 }

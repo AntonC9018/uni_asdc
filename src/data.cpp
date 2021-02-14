@@ -75,11 +75,11 @@ Record deserialize_record(char* buffer)
 
     sscanf(token, "%u", &record.id);
     token = strtok(NULL, ",");
-    record.first_name = string_copy_with_malloc(token);
+    record.first_name = str_copy(token);
     token = strtok(NULL, ",");
-    record.last_name = string_copy_with_malloc(token);
+    record.last_name = str_copy(token);
     token = strtok(NULL, ",");
-    record.email = string_copy_with_malloc(token);
+    record.email = str_copy(token);
     token = strtok(NULL, ",");
     record.gender = deserialize_gender(token);
     token = strtok(NULL, ",");
@@ -92,11 +92,11 @@ void serialize_record(const Record* record, FILE* file)
 {
     fprintf(file, "%u", record->id);
     fputc(',', file);
-    fputs(record->first_name, file); 
+    fputs(record->first_name.chars, file); 
     fputc(',', file);
-    fputs(record->last_name, file); 
+    fputs(record->last_name.chars, file); 
     fputc(',', file);
-    fputs(record->email, file);
+    fputs(record->email.chars, file);
     fputc(',', file);
     serialize_gender(record->gender, file);
     fputc(',', file);
@@ -128,9 +128,9 @@ std::vector<Record> read_records_from_csv(const char* fname)
 
 void destroy_record(Record* record)
 {
-    free((void*)record->first_name);
-    free((void*)record->last_name);
-    free((void*)record->email);
+    str_free(record->first_name);
+    str_free(record->last_name);
+    str_free(record->email);
 }
 
 void destroy_records(std::vector<Record>& records)

@@ -58,6 +58,7 @@ int main()
     // Strings are hashed using the FNVa hashing algorithm
     printf("%zu\n", hmap_hash(hm, str_lit("John")));
     printf("%zu\n", hmap_hash(hm, str_lit("Okabe")));
+    // Might as well show the hashes themselves
     printf("%zu\n", str_hash(str_lit("John")));
     printf("%zu\n", str_hash(str_lit("Okabe")));
 

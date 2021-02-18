@@ -25,7 +25,7 @@ Record* binary_search(
         }
         else if (records[current].id < search_id)
         {
-            start = current;
+            start = current + 1;
         }
         else
         {

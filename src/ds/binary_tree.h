@@ -5,20 +5,22 @@
 
 namespace DS
 {
+    template<typename T>
     struct Binary_Tree
     {
         Binary_Tree* left;
         Binary_Tree* right;
-        Record* value;
+        T value;
     };
 
-    void insert(Binary_Tree** node, Record* value, s32(compare)(Record*, Record*))
+    template<typename T>
+    void insert(Binary_Tree<T>** node, T value, s32(compare)(T, T))
     {
         while (true)
         {
             if (!*node)
             {
-                Binary_Tree* new_node = (Binary_Tree*) malloc(sizeof(Binary_Tree));
+                Binary_Tree<T>* new_node = (Binary_Tree<T>*) malloc(sizeof(Binary_Tree<T>));
                 new_node->value = value;
                 new_node->left = NULL;
                 new_node->right = NULL;
@@ -38,7 +40,8 @@ namespace DS
         }
     }
 
-    Record* find(Binary_Tree* node, s32(compare)(Record*))
+    template<typename T>
+    T find(Binary_Tree<T>* node, s32(compare)(T))
     {
         while(true)
         {
@@ -64,7 +67,19 @@ namespace DS
         }
     }
 
-    void print(Binary_Tree* node) 
+    template<typename T>
+    void destroy(Binary_Tree<T>* tree)
+    {
+        if (tree != NULL)
+        {
+            destroy(tree->left);
+            destroy(tree->right);
+            free(tree);
+        }
+    }
+
+    template<typename T>
+    void print(Binary_Tree<T>* node) 
     {
         if (!node)
         {

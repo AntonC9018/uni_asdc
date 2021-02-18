@@ -84,7 +84,7 @@ void hash_map()
 
 void stuff()
 {
-    auto records =         read_records_from_csv("data_unordered.csv");
+    auto records         = read_records_from_csv("data_unordered.csv");
     auto records_ordered = read_records_from_csv("data.csv");
 
     Record* record = binary_search(records_ordered, 79); 
@@ -94,11 +94,11 @@ void stuff()
     serialize_record(record2);
 
     using namespace DS;
-    Binary_Tree* t = NULL;
+    Binary_Tree<Record*>* t = NULL;
 
     for (auto& record : records)
     {
-        insert(&t, &record, [](auto a, auto b) { return (s32)a->id - (s32)b->id; });
+        insert<Record*>(&t, &record, [](auto a, auto b) { return (s32)a->id - (s32)b->id; });
     }
     print(t);
 
@@ -108,8 +108,8 @@ void stuff()
 
 void profile()
 {
-    auto records =          read_records_from_csv("data_unordered.csv");
-    auto records_ordered =  read_records_from_csv("data.csv");
+    auto records =         read_records_from_csv("data_unordered.csv");
+    auto records_ordered = read_records_from_csv("data.csv");
     
     const int num_experiments = 10000;
     u64 search_id = 699;

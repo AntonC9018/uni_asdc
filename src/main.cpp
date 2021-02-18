@@ -19,17 +19,24 @@
 
 void profile();
 void stuff();
+void hash_map();
 
 
 int main()
 {
+    _chdir("assets");
+    profile();
+    // stuff();
+    // hash_map();
+}
+
+void hash_map()
+{
     // std::map<str_view_t, int> p;
     // p.insert({str_lit("HELLO"), 1});
     // p.insert({str_lit("WORLD"), 2});
-
     // printf("%i", p[str_lit("HELLO")]);
-    // stuff();
-    // profile();
+
     using namespace DS;
     auto hash_map = hmap_create();
     auto hm       = &hash_map;
@@ -77,7 +84,6 @@ int main()
 
 void stuff()
 {
-    _chdir("assets");
     auto records =         read_records_from_csv("data_unordered.csv");
     auto records_ordered = read_records_from_csv("data.csv");
 

@@ -1,5 +1,5 @@
 #pragma once
-#include <time.h>
+#include <chrono>
 #include <stdio.h>
 
 #include <mydefines.h>
@@ -7,25 +7,28 @@
 struct Profiler
 {
     u32 num_iters;
-    clock_t started_time;
-    clock_t time_elapsed;
-} _std_profiler;
+    std::chrono::system_clock::time_point started_time;
+    std::chrono::milliseconds time_elapsed;
+};
+
+static Profiler _std_profiler;
 
 inline void profiler_start(Profiler* profiler = &_std_profiler)
 {
     profiler->num_iters = 0;
-    profiler->started_time = clock();
+    profiler->started_time = std::chrono::high_resolution_clock::now();
 }
 
 inline void profiler_stop(Profiler* profiler = &_std_profiler)
 {
-    profiler->time_elapsed = clock() - profiler->started_time;
+    profiler->time_elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(
+        std::chrono::high_resolution_clock::now() - profiler->started_time);
 }
 
 inline void profiler_print(FILE* file = stdout, Profiler* profiler = &_std_profiler)
 {
-    fprintf(file, "Number of iterations: %u\nTime elapsed: %lu (ms)\n", 
-        profiler->num_iters, (u32)profiler->time_elapsed / (CLOCKS_PER_SEC / 1000));
+    fprintf(file, "Number of iterations: %u\nTime elapsed: %i (ms)\n", 
+        profiler->num_iters, (int)profiler->time_elapsed.count());
 }
 
 inline void profiler_report_nicely(FILE* file = stdout, Profiler* profiler = &_std_profiler)

@@ -123,7 +123,7 @@ std::vector<Record> read_records_from_csv(const char* fname)
     
     fclose(file);
 
-    return std::move(result);
+    return result;
 }
 
 void destroy_record(Record* record)

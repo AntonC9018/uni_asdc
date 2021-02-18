@@ -19,7 +19,7 @@ namespace DS
 
     struct Hash_Map
     {
-        #define HASH_MAP_BUCKET_COUNT 256
+        #define HASH_MAP_BUCKET_COUNT 199
         Hash_Map_Bucket* buckets[HASH_MAP_BUCKET_COUNT];
     };
 

@@ -25,9 +25,9 @@ void hash_map();
 int main()
 {
     _chdir("assets");
-    profile();
+    // profile();
     // stuff();
-    // hash_map();
+    hash_map();
 }
 
 void hash_map()
@@ -93,14 +93,9 @@ void stuff()
     Record* record2 = exponential_search(records_ordered, 79); 
     serialize_record(record2);
 
-    using namespace DS;
-    Binary_Tree<Record*>* t = NULL;
+    
+    // print(t);
 
-    for (auto& record : records)
-    {
-        insert<Record*>(&t, &record, [](auto a, auto b) { return (s32)a->id - (s32)b->id; });
-    }
-    print(t);
 
     destroy_records(records);
     destroy_records(records_ordered);
@@ -115,7 +110,7 @@ void profile()
     u64 search_id = 699;
 
     {
-        printf("Linear Search: NORMAL.\n");
+        printf("Linear Search: NORMAL. (%i iterations)\n", num_experiments);
         profiler_start();
 
         for (int i = 0; i < num_experiments; i++)
@@ -124,7 +119,7 @@ void profile()
         profiler_report_nicely();
 
 
-        printf("Linear Search: STATIC PREDICATE.\n");
+        printf("Linear Search: STATIC PREDICATE. (%i iterations)\n", num_experiments);
         profiler_start();
 
         for (int i = 0; i < num_experiments; i++)
@@ -133,7 +128,7 @@ void profile()
         profiler_report_nicely();
 
 
-        printf("Linear Search: FUNCTOR WITH THE VALUES COPIED.\n");
+        printf("Linear Search: FUNCTOR WITH THE VALUES COPIED. (%i iterations)\n", num_experiments);
         profiler_start();
 
         
@@ -143,7 +138,7 @@ void profile()
         profiler_report_nicely();
 
 
-        printf("Linear Search: FUNCTOR WITH THE VALUES AS REFERENCE.\n");
+        printf("Linear Search: FUNCTOR WITH THE VALUES AS REFERENCE. (%i iterations)\n", num_experiments);
         profiler_start();
         
         for (int i = 0; i < num_experiments; i++)
@@ -153,7 +148,7 @@ void profile()
     }
 
     {
-        printf("Binary Search: NORMAL.\n");
+        printf("Binary Search: NORMAL. (%i iterations)\n", num_experiments);
         profiler_start();
 
         for (int i = 0; i < num_experiments; i++)
@@ -163,12 +158,32 @@ void profile()
     }
 
     {
-        printf("Exponential Search: NORMAL.\n");
+        printf("Exponential Search: NORMAL. (%i iterations)\n", num_experiments);
         profiler_start();
 
         for (int i = 0; i < num_experiments; i++)
             linear_search(records_ordered, search_id);
         
+        profiler_report_nicely();
+    }
+
+    {
+        using namespace DS;
+        Binary_Tree<Record*>* t = NULL; // or Binary_Tree<u32>* t = NULL;
+
+        for (auto& record : records)
+        {
+            insert<Record*>(&t, &record, [](auto a, auto b) { return (s32)a->id - (s32)b->id; });
+            // or insert(&t, record.id, ...);
+        }
+
+        printf("Binary tree Search: PREDICATE. (%i iterations)\n", num_experiments * 1000);
+        profiler_start();
+
+        for (int i = 0; i < num_experiments * 1000; i++)
+            find<Record*>(t, [](auto rec) { return (s32)rec->id - 699; }); 
+            // or records_ordered[find(t, ...)]; 
+
         profiler_report_nicely();
     }
 }

@@ -41,10 +41,12 @@ namespace DS
     }
 
     template<typename T>
-    T find(Binary_Tree<T>* node, s32(compare)(T))
+    T find(Binary_Tree<T>* node, s32(compare)(T), Profiler* profiler = &_std_profiler)
     {
         while(true)
         {
+            profiler->num_iters++;
+
             if (!node)
             {
                 return {};

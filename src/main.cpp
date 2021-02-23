@@ -32,11 +32,6 @@ int main()
 
 void hash_map()
 {
-    // std::map<str_view_t, int> p;
-    // p.insert({str_lit("HELLO"), 1});
-    // p.insert({str_lit("WORLD"), 2});
-    // printf("%i", p[str_lit("HELLO")]);
-
     using namespace DS;
     auto hash_map = hmap_create();
     auto hm       = &hash_map;
@@ -107,62 +102,63 @@ void profile()
     auto records_ordered = read_records_from_csv("data.csv");
     
     const int num_experiments = 10000;
-    u64 search_id = 699;
+    constexpr u64 const_search_id = 699;
+    u64 search_id = const_search_id;
 
     {
-        printf("Linear Search: NORMAL. (%i iterations)\n", num_experiments);
+        printf("Linear Search: NORMAL. (%i samples)\n", num_experiments);
         profiler_start();
 
         for (int i = 0; i < num_experiments; i++)
-            linear_search(records, search_id);
+            assert(linear_search(records, search_id)->id == search_id);
         
         profiler_report_nicely();
 
 
-        printf("Linear Search: STATIC PREDICATE. (%i iterations)\n", num_experiments);
+        printf("Linear Search: STATIC PREDICATE. (%i samples)\n", num_experiments);
         profiler_start();
 
         for (int i = 0; i < num_experiments; i++)
-            linear_search_predicate(records, [](const Record* r) { return r->id == 699; });
+            assert(
+                linear_search_predicate(records, [](const Record* r) { return r->id == const_search_id; })->id == search_id);
 
         profiler_report_nicely();
 
 
-        printf("Linear Search: FUNCTOR WITH THE VALUES COPIED. (%i iterations)\n", num_experiments);
+        printf("Linear Search: FUNCTOR WITH THE VALUES COPIED. (%i samples)\n", num_experiments);
         profiler_start();
-
         
         for (int i = 0; i < num_experiments; i++)
-            linear_search_stdfunction(records, [=](const Record* r) { return r->id == search_id; });
+            assert(linear_search_stdfunction(records, [=](const Record* r) { return r->id == search_id; })->id == search_id);
 
         profiler_report_nicely();
 
 
-        printf("Linear Search: FUNCTOR WITH THE VALUES AS REFERENCE. (%i iterations)\n", num_experiments);
+        printf("Linear Search: FUNCTOR WITH THE VALUES AS REFERENCE. (%i samples)\n", num_experiments);
         profiler_start();
         
         for (int i = 0; i < num_experiments; i++)
-            linear_search_stdfunction(records, [&](const Record* r) { return r->id == search_id; });
+            assert(linear_search_stdfunction(records, [&](const Record* r) { return r->id == search_id; })->id == search_id);
 
         profiler_report_nicely();
     }
 
     {
-        printf("Binary Search: NORMAL. (%i iterations)\n", num_experiments);
+        printf("Binary Search: NORMAL. (%i samples)\n", num_experiments);
         profiler_start();
 
         for (int i = 0; i < num_experiments; i++)
-            linear_search(records_ordered, search_id);
+            assert(linear_search(records_ordered, search_id)->id == search_id);
         
         profiler_report_nicely();
     }
 
     {
-        printf("Exponential Search: NORMAL. (%i iterations)\n", num_experiments);
+        printf("Exponential Search: NORMAL. (%i samples)\n", num_experiments);
         profiler_start();
 
         for (int i = 0; i < num_experiments; i++)
-            linear_search(records_ordered, search_id);
+            assert(linear_search(records_ordered, search_id)->id == search_id);
         
         profiler_report_nicely();
     }
@@ -177,11 +173,11 @@ void profile()
             // or insert(&t, record.id, ...);
         }
 
-        printf("Binary tree Search: PREDICATE. (%i iterations)\n", num_experiments * 100);
+        printf("Binary tree Search: PREDICATE. (%i samples)\n", num_experiments * 100);
         profiler_start();
 
         for (int i = 0; i < num_experiments * 100; i++)
-            find<Record*>(t, [](auto rec) { return (s32)rec->id - 699; }); 
+            assert(find<Record*>(t, [](auto rec) { return (s32)rec->id - (s32)const_search_id; })->id == search_id); 
             // or records_ordered[find(t, ...)]; 
 
         profiler_report_nicely();

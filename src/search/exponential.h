@@ -16,13 +16,15 @@ Record* exponential_search(
 
     while (c < end)
     {
+        size_t index = c + i >= end ? end - 1 : c + i;
+
         profiler->num_iters++;
         
-        if (records[c + i].id == search_id)
+        if (records[index].id == search_id)
         {
-            return &records[c + i];
+            return &records[index];
         }
-        else if (records[c + i].id < search_id)
+        else if (records[index].id < search_id)
         {
             i *= 2;
         }

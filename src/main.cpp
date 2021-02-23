@@ -25,9 +25,9 @@ void hash_map();
 int main()
 {
     _chdir("assets");
-    profile();
+    // profile();
     // stuff();
-    // hash_map();
+    hash_map();
 }
 
 void hash_map()
@@ -101,7 +101,7 @@ void profile()
     auto records =         read_records_from_csv("data_unordered.csv");
     auto records_ordered = read_records_from_csv("data.csv");
     
-    const int num_experiments = 10000;
+    const int num_experiments = 30000;
     constexpr u64 const_search_id = 699;
     u64 search_id = const_search_id;
 
@@ -148,7 +148,7 @@ void profile()
         profiler_start();
 
         for (int i = 0; i < num_experiments; i++)
-            assert(linear_search(records_ordered, search_id)->id == search_id);
+            assert(binary_search(records_ordered, search_id)->id == search_id);
         
         profiler_report_nicely();
     }
@@ -158,7 +158,7 @@ void profile()
         profiler_start();
 
         for (int i = 0; i < num_experiments; i++)
-            assert(linear_search(records_ordered, search_id)->id == search_id);
+            assert(exponential_search(records_ordered, search_id)->id == search_id);
         
         profiler_report_nicely();
     }

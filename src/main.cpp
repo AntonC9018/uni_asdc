@@ -25,9 +25,9 @@ void hash_map();
 int main()
 {
     _chdir("assets");
-    // profile();
+    profile();
     // stuff();
-    hash_map();
+    // hash_map();
 }
 
 void hash_map()
@@ -177,10 +177,10 @@ void profile()
             // or insert(&t, record.id, ...);
         }
 
-        printf("Binary tree Search: PREDICATE. (%i iterations)\n", num_experiments * 1000);
+        printf("Binary tree Search: PREDICATE. (%i iterations)\n", num_experiments * 100);
         profiler_start();
 
-        for (int i = 0; i < num_experiments * 1000; i++)
+        for (int i = 0; i < num_experiments * 100; i++)
             find<Record*>(t, [](auto rec) { return (s32)rec->id - 699; }); 
             // or records_ordered[find(t, ...)]; 
 

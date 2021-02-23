@@ -10,7 +10,7 @@ Record* binary_search(
     size_t start = 0;
     size_t end = records.size();
 
-    while (true)
+    while (start <= end)
     {    
         profiler->num_iters++;
         size_t current = (end + start) / 2;
@@ -19,17 +19,13 @@ Record* binary_search(
         {
             return &records[current];
         }
-        else if (start >= end)
-        {
-            return NULL;
-        }
-        else if (records[current].id < search_id)
+        if (records[current].id < search_id)
         {
             start = current + 1;
         }
         else
         {
-            end = current;
+            end = current - 1;
         }
     }
     return NULL;

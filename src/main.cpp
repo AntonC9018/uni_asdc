@@ -2,14 +2,12 @@
 #include <stdlib.h>
 #include <direct.h>
 #include <inttypes.h>
-#include <map>
 #include <assert.h>
 
 #include <mydefines.h>
 #include <strlib.h>
 
 #include "data.h"
-#include "string_util.h"
 #include "search/linear.h"
 #include "search/binary.h"
 #include "search/exponential.h"
@@ -17,18 +15,38 @@
 #include "ds/binary_tree.h"
 #include "ds/hash_map.h"
 
+#include "sort/merge.h"
+#include "sort/util.h"
+
 void profile();
 void stuff();
 void hash_map();
+void sorts();
+void search_tests();
 
 
 int main()
 {
     _chdir("assets");
+    search_tests();
     // profile();
-    // stuff();
-    hash_map();
+    // hash_map();
+    // sorts();
 }
+
+s32 compare_func(Record* a, Record* b)
+{ 
+    return str_compare(str_view(a->first_name), str_view(b->first_name)); 
+};
+
+
+void sorts()
+{
+    auto records = read_records_from_csv("data_unordered.csv");
+    Sort::merge_sort(records.begin(), records.end(), compare_func);
+    assert(Sort::is_sorted(records.begin(), records.end(), compare_func));
+}
+
 
 void hash_map()
 {
@@ -74,7 +92,9 @@ void hash_map()
     assert(!hmap_has_key(hm, str_lit("Mayuri")));
     assert(hmap_has_value(hm, okabe));
 
-    assert(compare_record( hmap_get(hm, str_lit("Okabe")), okabe ));
+    auto value = hmap_get(hm, str_lit("Okabe"));
+
+    assert(compare_record( &value, &okabe ));
 }
 
 void stuff()
@@ -96,90 +116,102 @@ void stuff()
     destroy_records(records_ordered);
 }
 
+DS::Binary_Tree<Record*>* binary_tree_from_records(std::vector<Record>& records)
+{
+    DS::Binary_Tree<Record*>* t = NULL;
+    for (auto& record : records)
+    {
+        DS::insert(&t, &record, [](auto a, auto b) { return (s32)a->id - (s32)b->id; });
+        // or insert(&t, record.id, ...);
+    }
+    return t;
+}
+
+void search_tests()
+{
+    auto records =         read_records_from_csv("data_unordered.csv");
+    auto records_ordered = read_records_from_csv("data.csv");
+
+    for (u32 i = 1; i <= records.size(); i++)
+        assert(linear_search(records, i)->id == i); 
+
+    for (u32 i = 1; i <= records_ordered.size(); i++)
+        assert(binary_search(records_ordered, i)->id == i);
+
+    for (u32 i = 1; i <= records_ordered.size(); i++)
+        assert(exponential_search(records_ordered, i)->id == i); 
+
+    auto t = binary_tree_from_records(records); 
+
+    for (u32 i = 1; i <= records_ordered.size(); i++)
+        assert(DS::find(t, [&](auto rec) { return (s32)rec->id - (s32)(i); })->id == i);
+}
+
 void profile()
 {
     auto records =         read_records_from_csv("data_unordered.csv");
     auto records_ordered = read_records_from_csv("data.csv");
     
-    const int num_experiments = 30000;
-    constexpr u64 const_search_id = 699;
-    u64 search_id = const_search_id;
+    const int num_experiments = 10000;
 
+    // generate random id's for each of the experiments
+    std::vector<u64> ids(num_experiments);
+    for (int i = 0; i < num_experiments; i++)
     {
-        printf("Linear Search: NORMAL. (%i samples)\n", num_experiments);
-        profiler_start();
-
-        for (int i = 0; i < num_experiments; i++)
-            assert(linear_search(records, search_id)->id == search_id);
-        
-        profiler_report_nicely();
-
-
-        printf("Linear Search: STATIC PREDICATE. (%i samples)\n", num_experiments);
-        profiler_start();
-
-        for (int i = 0; i < num_experiments; i++)
-            assert(
-                linear_search_predicate(records, [](const Record* r) { return r->id == const_search_id; })->id == search_id);
-
-        profiler_report_nicely();
-
-
-        printf("Linear Search: FUNCTOR WITH THE VALUES COPIED. (%i samples)\n", num_experiments);
-        profiler_start();
-        
-        for (int i = 0; i < num_experiments; i++)
-            assert(linear_search_stdfunction(records, [=](const Record* r) { return r->id == search_id; })->id == search_id);
-
-        profiler_report_nicely();
-
-
-        printf("Linear Search: FUNCTOR WITH THE VALUES AS REFERENCE. (%i samples)\n", num_experiments);
-        profiler_start();
-        
-        for (int i = 0; i < num_experiments; i++)
-            assert(linear_search_stdfunction(records, [&](const Record* r) { return r->id == search_id; })->id == search_id);
-
-        profiler_report_nicely();
+        ids[i] = rand() % records.size() + 1;
     }
 
-    {
-        printf("Binary Search: NORMAL. (%i samples)\n", num_experiments);
-        profiler_start();
+    // retrieve the random id for the current iteration
+    auto id = [&](Profiler* p) { return ids[p->num_experiments % num_experiments]; };
 
-        for (int i = 0; i < num_experiments; i++)
-            assert(binary_search(records_ordered, search_id)->id == search_id);
-        
-        profiler_report_nicely();
-    }
 
-    {
-        printf("Exponential Search: NORMAL. (%i samples)\n", num_experiments);
-        profiler_start();
+    profiler_perform_experiments(
+        "Linear Search: NORMAL.",
+        [&](auto p) { linear_search(records, id(p), p); },
+        num_experiments
+    );
 
-        for (int i = 0; i < num_experiments; i++)
-            assert(exponential_search(records_ordered, search_id)->id == search_id);
-        
-        profiler_report_nicely();
-    }
+    profiler_perform_experiments(
+        "Linear Search: STD::FUNCTION.",
+        [&](auto p) { linear_search_stdfunction(records, 
+            [=](const Record* r) { return r->id == id(p); }, p); 
+        },
+        num_experiments
+    );
+
+    profiler_perform_experiments(
+        "Binary Search: NORMAL.",
+        [&](auto p) { binary_search(records_ordered, id(p), p); },
+        num_experiments * 100
+    );
+
+    profiler_perform_experiments(
+        "Exponential Search: NORMAL.",
+        [&](auto p) { exponential_search(records_ordered, id(p), p); },
+        num_experiments * 100
+    );
 
     {
         using namespace DS;
-        Binary_Tree<Record*>* t = NULL; // or Binary_Tree<u32>* t = NULL;
 
-        for (auto& record : records)
-        {
-            insert<Record*>(&t, &record, [](auto a, auto b) { return (s32)a->id - (s32)b->id; });
-            // or insert(&t, record.id, ...);
-        }
+        profiler_perform_experiments(
+            "Binary tree construction.",
 
-        printf("Binary tree Search: PREDICATE. (%i samples)\n", num_experiments * 100);
-        profiler_start();
+            [&](auto p) { 
+                Binary_Tree<Record*>* t = binary_tree_from_records(records);
+                destroy(t);
+            },
 
-        for (int i = 0; i < num_experiments * 100; i++)
-            assert(find<Record*>(t, [](auto rec) { return (s32)rec->id - (s32)const_search_id; })->id == search_id); 
-            // or records_ordered[find(t, ...)]; 
+            num_experiments
+        );
 
-        profiler_report_nicely();
+        Binary_Tree<Record*>* t = binary_tree_from_records(records);
+
+        profiler_perform_experiments(
+            "Binary tree searches (constructed beforehand)",
+            [&](auto p) { find(t, 
+                [&](auto rec) { return (s32)rec->id - (s32)id(p); }, p); },
+            num_experiments * 100
+        );
     }
 }

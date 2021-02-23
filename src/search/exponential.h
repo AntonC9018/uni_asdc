@@ -16,7 +16,7 @@ Record* exponential_search(
 
     while (c < end)
     {
-        size_t index = c + i >= end ? end - 1 : c + i;
+        size_t index = std::min(c + i, end - 1);
 
         profiler->num_iters++;
         

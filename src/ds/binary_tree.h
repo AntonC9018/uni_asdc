@@ -13,8 +13,8 @@ namespace DS
         T value;
     };
 
-    template<typename T>
-    void insert(Binary_Tree<T>** node, T value, s32(compare)(T, T))
+    template<typename T, typename Comparator>
+    void insert(Binary_Tree<T>** node, T value, Comparator compare)
     {
         while (true)
         {
@@ -40,8 +40,8 @@ namespace DS
         }
     }
 
-    template<typename T>
-    T find(Binary_Tree<T>* node, s32(compare)(T), Profiler* profiler = &_std_profiler)
+    template<typename T, typename Comparator>
+    T find(Binary_Tree<T>* node, Comparator compare, Profiler* profiler = &_std_profiler)
     {
         while(true)
         {

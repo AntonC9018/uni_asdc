@@ -7,7 +7,6 @@
 #include <vector>
 
 #include <mydefines.h>
-#include "string_util.h"
 #include <strlib.h>
 
 enum Gender
@@ -16,10 +15,6 @@ enum Gender
 };
 
 typedef u32 Ip_Address; 
-// {
-//     u32 address:0;
-//     u8 bytes[4]:0;
-// };
 
 struct Record
 {
@@ -31,14 +26,14 @@ struct Record
     Ip_Address ip_address;
 };
 
-inline bool compare_record(Record a, Record b)
+inline bool compare_record(const Record* a, const Record* b)
 {
-    return a.id == b.id
-        && str_compare(str_view(a.first_name), str_view(b.first_name)) == 0
-        && str_compare(str_view(a.last_name),  str_view(b.last_name))  == 0
-        && str_compare(str_view(a.email),      str_view(b.email))      == 0
-        && a.gender == b.gender
-        && a.ip_address == b.ip_address;
+    return a->id == b->id
+        && str_compare(str_view(a->first_name), str_view(b->first_name)) == 0
+        && str_compare(str_view(a->last_name),  str_view(b->last_name))  == 0
+        && str_compare(str_view(a->email),      str_view(b->email))      == 0
+        && a->gender == b->gender
+        && a->ip_address == b->ip_address;
 }
 
 void destroy_record(Record* record);

@@ -8,10 +8,10 @@ Record* binary_search(
     std::vector<Record>& records, size_t search_id, Profiler* profiler = &_std_profiler)
 {
     size_t start = 0;
-    size_t end = records.size();
+    size_t end = records.size() - 1;
 
     while (start <= end)
-    {    
+    {
         profiler->num_iters++;
         size_t current = (end + start) / 2;
 

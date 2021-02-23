@@ -70,7 +70,7 @@ namespace DS
 
             while (bucket != NULL)
             {
-                if (compare_record(bucket->value, value))
+                if (compare_record(&bucket->value, &value))
                 {
                     return true;
                 }

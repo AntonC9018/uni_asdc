@@ -1,3 +1,6 @@
 [submodule "third_party/strlib"]
 	path = third_party/strlib
 	url = https://github.com/AntonC9018/strlib
+[submodule "third_party/mydefines"]
+	path = third_party/mydefines
+	url = https://github.com/AntonC9018/mydefines

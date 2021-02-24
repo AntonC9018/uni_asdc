@@ -16,7 +16,7 @@ namespace Sort
 
         while (current + 1 != end)
         {
-            if (compare_func(&*current, &*(current + 1)) > 0)
+            if (compare_func(*current, *(current + 1)) > 0)
             {
                 return false;
             }
@@ -25,10 +25,27 @@ namespace Sort
         return true;
     }
     
-    s32 compare_ints(int* a, int* b)
+    s32 compare_ints(int a, int b)
     {
-        printf("Comparing (%i) to (%i)\n", *a, *b);
-        return *a - *b;
+        printf("Comparing (%i) to (%i)\n", a, b);
+        return a - b;
+    }
+    
+    inline void swap(T& a, T& b)
+    {
+        T t;
+        memcpy(&t, &a, sizeof(T));
+        memcpy(&a, &b, sizeof(T));
+        memcpy(&b, &t, sizeof(T));
+    }
+
+    inline void swap(T* a, T* b)
+    {
+        T t;
+        memcpy(&t, a, sizeof(T));
+        memcpy(a, b,  sizeof(T));
+        memcpy(b, &t, sizeof(T));
     }
 }
+
 #undef T

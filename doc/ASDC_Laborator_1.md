@@ -2,9 +2,9 @@
 
 A elaborat: **Curmanschii Anton, IA1901**.
 
-Codul sursă întreg puteți privi [pe github-ul meu](https://github.com/AntonC9018/asdc).
+Codul sursă întreg puteți privi [pe github-ul meu](https://github.com/AntonC9018/uni_asdc).
 
-Acest document tot este accesibil [pe web](https://github.com/AntonC9018/asdc/blob/doc/ASDC_Laborator_1.md).
+Acest document tot este accesibil [pe web](https://github.com/AntonC9018/uni_asdc/blob/master/doc/ASDC_Laborator_1.md).
 
 ## Introducere
 

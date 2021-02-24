@@ -16,6 +16,7 @@
 #include "ds/hash_map.h"
 
 #include "sort/merge.h"
+#include "sort/heap.h"
 #include "sort/util.h"
 
 void profile();
@@ -28,25 +29,44 @@ void search_tests();
 int main()
 {
     _chdir("assets");
-    search_tests();
-    // profile();
-    // hash_map();
-    // sorts();
+
+    // {
+    //     // Lab. 1
+    //     search_tests();
+    //     profile();
+    //     hash_map();
+    // }
+
+    {
+        // Lab. 2
+        sorts();
+    }
 }
 
-s32 compare_func(Record* a, Record* b)
-{ 
-    return str_compare(str_view(a->first_name), str_view(b->first_name)); 
+// Use references here, since it plays out better with templates
+s32 compare_func(const Record& a, const Record& b)
+{
+    return str_compare(str_view(a.first_name), str_view(b.first_name)); 
 };
-
 
 void sorts()
 {
-    auto records = read_records_from_csv("data_unordered.csv");
-    Sort::merge_sort(records.begin(), records.end(), compare_func);
-    assert(Sort::is_sorted(records.begin(), records.end(), compare_func));
-}
+    auto records = read_records_from_csv("data.csv");
+    auto begin = records.begin();
+    auto end   = records.end();
 
+#define SHUFFLE()       std::random_shuffle(begin, end)
+#define ASSERT_SORTED() assert(Sort::is_sorted(begin, end, compare_func))
+#define SORT_TEST(sort) \
+    SHUFFLE(); \
+    (sort)(begin, end, compare_func); \
+    ASSERT_SORTED();
+
+    SORT_TEST(Sort::merge_sort);
+    SORT_TEST(Sort::heap_sort);
+
+    destroy_records(records);
+}
 
 void hash_map()
 {
@@ -97,25 +117,6 @@ void hash_map()
     assert(compare_record( &value, &okabe ));
 }
 
-void stuff()
-{
-    auto records         = read_records_from_csv("data_unordered.csv");
-    auto records_ordered = read_records_from_csv("data.csv");
-
-    Record* record = binary_search(records_ordered, 79); 
-    serialize_record(record);
-
-    Record* record2 = exponential_search(records_ordered, 79); 
-    serialize_record(record2);
-
-    
-    // print(t);
-
-
-    destroy_records(records);
-    destroy_records(records_ordered);
-}
-
 DS::Binary_Tree<Record*>* binary_tree_from_records(std::vector<Record>& records)
 {
     DS::Binary_Tree<Record*>* t = NULL;
@@ -145,6 +146,9 @@ void search_tests()
 
     for (u32 i = 1; i <= records_ordered.size(); i++)
         assert(DS::find(t, [&](auto rec) { return (s32)rec->id - (s32)(i); })->id == i);
+
+    destroy_records(records);
+    destroy_records(records_ordered);
 }
 
 void profile()
@@ -214,4 +218,7 @@ void profile()
             num_experiments * 100
         );
     }
+    
+    destroy_records(records);
+    destroy_records(records_ordered);
 }

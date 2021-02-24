@@ -1,26 +1,20 @@
 #pragma once
-#include <strlib.h>
 #include <mydefines.h>
 #include "../data.h"
+#include "../profiler.h"
 
 #define T Record
 
 namespace Sort
 {
-    inline void swap(T* a, T* b)
-    {
-        T t;
-        memcpy(&t, a, sizeof(T));
-        memcpy(a, b,  sizeof(T));
-        memcpy(b, &t, sizeof(T));
-    }
-
-
     // `end` is one past the last element, like in STL algorithms
     template<typename Comparator>
     void merge_sort_internal(T* begin, T* end, Comparator compare_func, T* buffer, Profiler* profiler)
     {
         if (begin == end || begin == end - 1)  return;
+
+        // Past this point counts as an iteration.
+        profiler->num_iters++;
 
         auto length = end - begin;
         auto middle = length / 2 + begin;
@@ -39,7 +33,8 @@ namespace Sort
 
         while (buf_left < buf_middle && buf_right < buf_end)
         {
-            auto comp_result = compare_func(buf_left, buf_right);
+            auto comp_result = compare_func(*buf_left, *buf_right);
+            profiler->num_comparisons++;
             
             // buf_left is greater than right, insert the right one
             if (comp_result > 0)

@@ -7,26 +7,25 @@
 
 namespace Sort
 {
-    // `end` is one past the last element, like in STL algorithms
     template<typename Comparator>
-    void merge_sort_internal(T* begin, T* end, Comparator compare_func, T* buffer, Profiler* profiler)
+    void merge_sort_internal(T* begin, size_t length, Comparator compare_func, T* buffer, Profiler* profiler)
     {
-        if (begin == end || begin == end - 1)  return;
+        if (length <= 1)  return;
 
         // Past this point counts as an iteration.
         profiler->num_iters++;
 
-        auto length = end - begin;
-        auto middle = length / 2 + begin;
+        auto half_length = length / 2;
+        auto middle = half_length + begin;
 
         auto buf_left   = buffer;
-        auto buf_middle = buffer + length / 2;
+        auto buf_middle = buffer + half_length;
         auto buf_right  = buf_middle;
         auto buf_end    = buffer + length;
 
 
-        merge_sort_internal(begin, middle, compare_func, buf_left, profiler);
-        merge_sort_internal(middle, end, compare_func, buf_right, profiler);
+        merge_sort_internal(begin,           half_length, compare_func, buffer, profiler);
+        merge_sort_internal(middle, length - half_length, compare_func, buffer, profiler);
 
         auto next = begin;
         memcpy(buffer, begin, length * sizeof(T));
@@ -63,18 +62,17 @@ namespace Sort
 
     }
 
+    // `end` is one past the last element, like in STL algorithms
     template<typename Iterator, typename Comparator>
     void merge_sort(Iterator begin, Iterator end, Comparator compare_func, Profiler* profiler = &_std_profiler)
     {
         if (begin + 1 < end)
         {
-            auto begin_ptr = &*begin;
-            auto end_ptr = &*end;
-            auto length = end_ptr - begin_ptr;
+            auto length = end - begin;
 
             auto buffer = (T*) malloc(length * sizeof(T));
 
-            merge_sort_internal(begin_ptr, end_ptr, compare_func, buffer, profiler);
+            merge_sort_internal(&*begin, length, compare_func, buffer, profiler);
 
             free(buffer);
         }

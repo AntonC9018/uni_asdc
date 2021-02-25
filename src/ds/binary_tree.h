@@ -14,7 +14,7 @@ namespace DS
     };
 
     template<typename T, typename Comparator>
-    void insert(Binary_Tree<T>** node, T value, Comparator compare)
+    void bt_insert(Binary_Tree<T>** node, T value, Comparator compare)
     {
         while (true)
         {
@@ -28,7 +28,7 @@ namespace DS
                 return;
             }
 
-            s32 comparison_result = compare((*node)->value, value);
+            s32 comparison_result = compare(value, (*node)->value);
             if (comparison_result > 0)
             {
                 node = &((*node)->right);
@@ -41,7 +41,7 @@ namespace DS
     }
 
     template<typename T, typename Comparator>
-    T find(Binary_Tree<T>* node, Comparator compare, Profiler* profiler = &_std_profiler)
+    T bt_find(Binary_Tree<T>* node, Comparator compare, Profiler* profiler = &_std_profiler)
     {
         while(true)
         {
@@ -58,7 +58,7 @@ namespace DS
             {
                 return node->value;
             }
-            if (comparison_result > 0)
+            if (comparison_result < 0)
             {
                 node = node->right;
             }
@@ -70,25 +70,25 @@ namespace DS
     }
 
     template<typename T>
-    void destroy(Binary_Tree<T>* tree)
+    void bt_destroy(Binary_Tree<T>* tree)
     {
         if (tree != NULL)
         {
-            destroy(tree->left);
-            destroy(tree->right);
+            bt_destroy(tree->left);
+            bt_destroy(tree->right);
             free(tree);
         }
     }
 
     template<typename T>
-    void print(Binary_Tree<T>* node) 
+    void bt_print(Binary_Tree<T>* node) 
     {
         if (!node)
         {
             return;
         }
+        bt_print(node->left);
         serialize_record(node->value);
-        print(node->left);
-        print(node->right);
+        bt_print(node->right);
     }
 }

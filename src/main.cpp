@@ -24,7 +24,8 @@ void stuff();
 void hash_map();
 void sorts();
 void search_tests();
-
+DS::Binary_Tree<Record*>* binary_tree_from_records(std::vector<Record>& records);
+void bt_print();
 
 int main()
 {
@@ -32,14 +33,15 @@ int main()
 
     // {
     //     // Lab. 1
-    //     search_tests();
-    //     profile();
-    //     hash_map();
+        search_tests();
+        // bt_print();
+        // profile();
+        // hash_map();
     // }
 
     {
         // Lab. 2
-        sorts();
+        // sorts();
     }
 }
 
@@ -122,7 +124,7 @@ DS::Binary_Tree<Record*>* binary_tree_from_records(std::vector<Record>& records)
     DS::Binary_Tree<Record*>* t = NULL;
     for (auto& record : records)
     {
-        DS::insert(&t, &record, [](auto a, auto b) { return (s32)a->id - (s32)b->id; });
+        DS::bt_insert(&t, &record, [](auto a, auto b) { return (s32)a->id - (s32)b->id; });
         // or insert(&t, record.id, ...);
     }
     return t;
@@ -145,10 +147,19 @@ void search_tests()
     auto t = binary_tree_from_records(records); 
 
     for (u32 i = 1; i <= records_ordered.size(); i++)
-        assert(DS::find(t, [&](auto rec) { return (s32)rec->id - (s32)(i); })->id == i);
+        assert(DS::bt_find(t, [&](auto rec) { return (s32)rec->id - (s32)(i); })->id == i);
 
     destroy_records(records);
     destroy_records(records_ordered);
+}
+
+// Should be printed in ascending order
+void bt_print()
+{
+    auto records = read_records_from_csv("data_unordered.csv");
+    auto bt      = binary_tree_from_records(records);
+    DS::bt_print(bt);
+    destroy_records(records);
 }
 
 void profile()
@@ -203,7 +214,7 @@ void profile()
 
             [&](auto p) { 
                 Binary_Tree<Record*>* t = binary_tree_from_records(records);
-                destroy(t);
+                bt_destroy(t);
             },
 
             num_experiments
@@ -213,7 +224,7 @@ void profile()
 
         profiler_perform_experiments(
             "Binary tree searches (constructed beforehand)",
-            [&](auto p) { find(t, 
+            [&](auto p) { bt_find(t, 
                 [&](auto rec) { return (s32)rec->id - (s32)id(p); }, p); },
             num_experiments * 100
         );

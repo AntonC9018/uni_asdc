@@ -3,8 +3,6 @@
 #include <mydefines.h>
 #include "../data.h"
 
-#define T Record
-
 namespace Sort
 {
     template<typename Iterator, typename Comparator>
@@ -31,6 +29,7 @@ namespace Sort
         return a - b;
     }
     
+    template<typename T>
     inline void swap(T& a, T& b)
     {
         T t;
@@ -39,6 +38,7 @@ namespace Sort
         memcpy(&b, &t, sizeof(T));
     }
 
+    template<typename T>
     inline void swap(T* a, T* b)
     {
         T t;
@@ -47,5 +47,3 @@ namespace Sort
         memcpy(b, &t, sizeof(T));
     }
 }
-
-#undef T

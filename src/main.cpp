@@ -17,6 +17,7 @@
 
 #include "sort/merge.h"
 #include "sort/heap.h"
+#include "sort/quick.h"
 #include "sort/util.h"
 
 void profile();
@@ -33,7 +34,7 @@ int main()
 
     // {
     //     // Lab. 1
-        search_tests();
+        // search_tests();
         // bt_print();
         // profile();
         // hash_map();
@@ -41,7 +42,7 @@ int main()
 
     {
         // Lab. 2
-        // sorts();
+        sorts();
     }
 }
 
@@ -64,8 +65,13 @@ void sorts()
     (sort)(begin, end, compare_func); \
     ASSERT_SORTED();
 
+    SHUFFLE();
+    Sort::quick_sort(begin, end, compare_func);
+    for (auto& u : records) serialize_record(&u);
+
     SORT_TEST(Sort::merge_sort);
     SORT_TEST(Sort::heap_sort);
+    SORT_TEST(Sort::quick_sort);
 
     destroy_records(records);
 }

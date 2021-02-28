@@ -42,7 +42,7 @@ static void profiler_print(FILE* file = stdout, Profiler* profiler = &_std_profi
 
     if (profiler->num_comparisons != 0)
     {
-        fprintf(file, "Number of compares: %u\n", profiler->num_comparisons);
+        fprintf(file, "Number of comparisons: %u\n", profiler->num_comparisons);
     }
 
     if (profiler->num_experiments != 0)
@@ -58,7 +58,7 @@ static void profiler_print(FILE* file = stdout, Profiler* profiler = &_std_profi
 
         if (profiler->num_comparisons != 0)
         {
-            fprintf(file, "Compares per experiment: %f\n", 
+            fprintf(file, "Comparisons per experiment: %f\n", 
                 (float)profiler->num_comparisons / (float)profiler->num_experiments);
         }
     }

@@ -18,15 +18,16 @@
 #include "sort/merge.h"
 #include "sort/heap.h"
 #include "sort/quick.h"
+#include "sort/selection.h"
 #include "sort/util.h"
 
-void profile();
-void stuff();
-void hash_map();
-void sorts();
 void search_tests();
+void search_profile();
+void hash_map();
 DS::Binary_Tree<Record*>* binary_tree_from_records(std::vector<Record>& records);
 void bt_print();
+void sort_tests();
+void sort_profile();
 
 int main()
 {
@@ -36,13 +37,14 @@ int main()
     //     // Lab. 1
         // search_tests();
         // bt_print();
-        // profile();
+        // search_profile();
         // hash_map();
     // }
 
     {
         // Lab. 2
-        sorts();
+        sort_tests();
+        sort_profile();
     }
 }
 
@@ -52,7 +54,7 @@ s32 compare_func(const Record& a, const Record& b)
     return str_compare(str_view(a.first_name), str_view(b.first_name)); 
 };
 
-void sorts()
+void sort_tests()
 {
     auto records = read_records_from_csv("data.csv");
     auto begin = records.begin();
@@ -68,8 +70,34 @@ void sorts()
     SORT_TEST(Sort::merge_sort);
     SORT_TEST(Sort::heap_sort);
     SORT_TEST(Sort::quick_sort);
+    SORT_TEST(Sort::selection_sort);
 
     destroy_records(records);
+}
+
+void sort_profile()
+{
+    auto records = read_records_from_csv("data.csv");
+    auto begin = records.begin();
+    auto end   = records.end();
+
+    const size_t num_experiments = 1000;
+
+#define PERFORM_EXPERIMENTS(text, sort) \
+    profiler_perform_experiments( \
+        (text), \
+        [&](auto p) \
+        { \
+            std::random_shuffle(begin, end);\
+            (sort)(begin, end, compare_func, p); \
+        },\
+        num_experiments\
+    )\
+
+    PERFORM_EXPERIMENTS("Merge Sort.",     Sort::merge_sort);
+    PERFORM_EXPERIMENTS("Heap Sort.",      Sort::heap_sort);
+    PERFORM_EXPERIMENTS("Quick Sort.",     Sort::quick_sort);
+    PERFORM_EXPERIMENTS("Selection Sort.", Sort::selection_sort);
 }
 
 void hash_map()
@@ -164,7 +192,7 @@ void bt_print()
     destroy_records(records);
 }
 
-void profile()
+void search_profile()
 {
     auto records =         read_records_from_csv("data_unordered.csv");
     auto records_ordered = read_records_from_csv("data.csv");

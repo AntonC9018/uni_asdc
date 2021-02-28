@@ -1,5 +1,4 @@
 #pragma once
-#include <mydefines.h>
 #include "../data.h"
 #include "../profiler.h"
 
@@ -32,6 +31,8 @@ namespace Sort
         Comparator compare_func, Profiler* profiler = &_std_profiler)
     {
         if (begin == end || begin + 1 == end) return;
+
+        profiler->num_iters++;
 
         auto partition_iter = quick_partition(begin, end - 1, compare_func, profiler);
         quick_sort(begin, partition_iter,   compare_func, profiler);

@@ -376,7 +376,7 @@ void merge_sort_internal(T* begin, size_t length, Comparator compare_func, T* bu
 
 ### Complexitatea
 
-La fiecare înjumătățire, trecem prin întregul vector subdivizat. Avem în total $log N$ înjumătățiri, deoarece la fiecare înjumătățire vectorul devine de 2 ori mai mic. Deci, complexitatea-timp este $O(NlogN)$. Însă mai avem nevoie de un bufer aparte ce ar ține o copie a întregului vector, deci complexitatea-spațiu este $O(N)$ (datorită faptului că reutilizăm același bufer pentru fiecare iterație, însă dacă alocăm un bufer nou la fiecare iterație, complexitatea-spațiu ar fi tot $O(NlogN)$, deoarece avem $logN$ înjumătățiri).
+Complexitatea-timp este $O(NlogN)$ deoarece adâncimea recursivă a algoritmului este $logN$ și la fiecare adâncime se face $N$ comparări. Însă mai avem nevoie de un bufer aparte ce ar ține o copie a întregului vector, deci complexitatea-spațiu este $O(N)$ (datorită faptului că reutilizăm același bufer pentru fiecare iterație, însă dacă alocăm un bufer nou la fiecare iterație, complexitatea-spațiu ar fi tot $O(NlogN)$, deoarece avem $logN$ înjumătățiri).
 
 
 ## Quick sort
@@ -439,7 +439,7 @@ Iterator quick_partition(Iterator begin, Iterator last,
 
 ### Complexitatea
 
-Complexitatea este $O(NlogN)$ în caz mediu și în cazul favorabil, dar în unele cazuri nefavorabile algoritmul degenerează la complexitatea de $O(N^{2})$. Complexitatea spațiu este $O(logN)$, însă spețiul se folosește numai pentru recursii.
+Complexitatea este $O(NlogN)$ în caz mediu și în caz favorabil, dar în unele cazuri nefavorabile algoritmul degenerează la complexitatea de $O(N^{2})$. Complexitatea spațiu este $O(logN)$, însă spațiul se folosește numai pentru recursii.
 
 
 # Analiza

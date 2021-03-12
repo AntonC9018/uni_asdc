@@ -9,6 +9,7 @@ struct Profiler
     u32 num_iters;
     u32 num_comparisons;
     u32 num_experiments;
+    u32 num_swaps;
     std::chrono::system_clock::time_point started_time;
     std::chrono::microseconds time_elapsed;
 };
@@ -19,6 +20,7 @@ inline void profiler_start(Profiler* profiler = &_std_profiler)
 {
     profiler->num_iters = 0;
     profiler->num_comparisons = 0;
+    profiler->num_swaps = 0;
     profiler->num_experiments = 0;
     profiler->started_time = std::chrono::high_resolution_clock::now();
 }
@@ -45,6 +47,11 @@ static void profiler_print(FILE* file = stdout, Profiler* profiler = &_std_profi
         fprintf(file, "Number of comparisons: %u\n", profiler->num_comparisons);
     }
 
+    if (profiler->num_swaps != 0)
+    {
+        fprintf(file, "Number of swaps: %u\n", profiler->num_swaps);
+    }
+
     if (profiler->num_experiments != 0)
     {
         fprintf(file, "Number of experiments: %u\n", profiler->num_experiments);
@@ -60,6 +67,12 @@ static void profiler_print(FILE* file = stdout, Profiler* profiler = &_std_profi
         {
             fprintf(file, "Comparisons per experiment: %f\n", 
                 (float)profiler->num_comparisons / (float)profiler->num_experiments);
+        }
+
+        if (profiler->num_swaps != 0)
+        {
+            fprintf(file, "Swaps per experiment: %f\n", 
+                (float)profiler->num_swaps / (float)profiler->num_experiments);
         }
     }
 }

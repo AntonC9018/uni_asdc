@@ -19,21 +19,25 @@ namespace Sort
 
         size_t index_largest = current_index;
 
-        profiler->num_comparisons++;
-        if (index_left < length && compare_func(arr[index_left], arr[index_largest]) > 0)
+        if (index_left < length)
         {
-            index_largest = index_left;
+            profiler->num_comparisons++;
+            if (compare_func(arr[index_left], arr[index_largest]) > 0)
+                index_largest = index_left;
         }
 
-        profiler->num_comparisons++;
-        if (index_right < length && compare_func(arr[index_right], arr[index_largest]) > 0)
+        if (index_right < length)
         {
-            index_largest = index_right;
+            profiler->num_comparisons++;
+            if (compare_func(arr[index_right], arr[index_largest]) > 0)
+                index_largest = index_right;
         }
 
         if (index_largest != current_index)
         {
             Sort::swap(arr[current_index], arr[index_largest]);
+            profiler->num_swaps++;
+
             heapify(arr, length, index_largest, compare_func, profiler);
         }
     }
@@ -50,6 +54,8 @@ namespace Sort
         for (size_t i = length - 1; i > 0; i--)
         {
             Sort::swap(arr[0], arr[i]);
+            profiler->num_swaps++;
+
             heapify(arr, i, 0, compare_func, profiler);
         }
     }

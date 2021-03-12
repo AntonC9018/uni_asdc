@@ -43,7 +43,7 @@ int main()
 
     {
         // Lab. 2
-        sort_tests();
+        // sort_tests();
         sort_profile();
     }
 }
@@ -98,6 +98,8 @@ void sort_profile()
     PERFORM_EXPERIMENTS("Heap Sort.",      Sort::heap_sort);
     PERFORM_EXPERIMENTS("Quick Sort.",     Sort::quick_sort);
     PERFORM_EXPERIMENTS("Selection Sort.", Sort::selection_sort);
+
+    destroy_records(records);
 }
 
 void hash_map()

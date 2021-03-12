@@ -18,22 +18,24 @@ namespace Sort
         auto half_length = length / 2;
         auto middle = half_length + begin;
 
-        auto buf_left   = buffer;
-        auto buf_middle = buffer + half_length;
-        auto buf_right  = buf_middle;
-        auto buf_end    = buffer + length;
-
-
         merge_sort_internal(begin,           half_length, compare_func, buffer, profiler);
         merge_sort_internal(middle, length - half_length, compare_func, buffer, profiler);
 
         auto next = begin;
         memcpy(buffer, begin, length * sizeof(T));
+        
+        auto buf_left   = buffer;
+        auto buf_middle = buffer + half_length;
+        auto buf_right  = buf_middle;
+        auto buf_end    = buffer + length;
 
         while (buf_left < buf_middle && buf_right < buf_end)
         {
             auto comp_result = compare_func(*buf_left, *buf_right);
             profiler->num_comparisons++;
+
+            // Since we've done a memcpy before this, it still kind of counts as a swap
+            profiler->num_swaps++;
             
             // buf_left is greater than right, insert the right one
             if (comp_result > 0)
@@ -54,10 +56,12 @@ namespace Sort
         if (buf_left != buf_middle)
         {
             memcpy(next, buf_left, (buf_middle - buf_left) * sizeof(T));
+            profiler->num_swaps += (buf_middle - buf_left);
         }
         else
         {
             memcpy(next, buf_right, (buf_end - buf_right) * sizeof(T));
+            profiler->num_swaps += (buf_end - buf_right);
         }
 
     }

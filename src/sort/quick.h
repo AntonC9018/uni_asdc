@@ -18,11 +18,16 @@ namespace Sort
             if (compare_func(*begin, pivot_value) < 0)
             {   
                 Sort::swap(&*pivot_iter, &*begin);
+                profiler->num_swaps++;
+
                 pivot_iter++;
             }
             begin++;
         }
+
         Sort::swap(&*last, &*pivot_iter);
+        profiler->num_swaps++;
+
         return pivot_iter;
     }
 

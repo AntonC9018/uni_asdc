@@ -23,7 +23,9 @@ namespace Sort
                 }
             }
 
-            swap(&*min_iter, &*start);
+            Sort::swap(&*min_iter, &*start);
+            profiler->num_swaps++;
+
             start++;
         }
     }

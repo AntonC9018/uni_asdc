@@ -23,6 +23,8 @@
 
 #include "ds/singly_linked_list.h"
 #include "ds/doubly_linked_list.h"
+#include "ds/array_stack.h"
+#include "ds/list_stack.h"
 
 
 void search_tests();
@@ -33,6 +35,7 @@ void bt_print();
 void sort_tests();
 void sort_profile();
 void list_tests();
+void stack_tests();
 
 int main()
 {
@@ -56,7 +59,58 @@ int main()
     */
     {
         // Lab. 3
-        list_tests();
+        // list_tests();
+        stack_tests();
+    }
+}
+
+void stack_tests()
+{
+    using namespace DS;
+    {
+        auto stack = array_stack_make<int>(10);
+
+        // initally empty
+        assert(stack_is_empty(&stack));
+
+        // add some elements
+        stack_push(&stack, 3);
+        stack_push(&stack, 4);
+        stack_push(&stack, 5);
+
+        // peek an element
+        assert(*stack_peek(&stack) == 5);
+
+        // pop some back
+        assert(stack_pop(&stack) == 5);
+        assert(stack_pop(&stack) == 4);
+        assert(stack_pop(&stack) == 3);
+
+        // emptied back
+        assert(stack_is_empty(&stack));
+    }
+    using namespace DS;
+    {
+        auto stack = list_stack_make<int>();
+
+        // initally empty
+        assert(stack_is_empty(&stack));
+
+        // add some elements
+        stack_push(&stack, 3);
+        stack_push(&stack, 4);
+        stack_push(&stack, 5);
+
+        // peek an element
+        assert(*stack_peek(&stack) == 5);
+
+        // pop some back
+        assert(stack_pop(&stack) == 5);
+        assert(stack_pop(&stack) == 4);
+        assert(stack_pop(&stack) == 3);
+
+        // emptied back
+        assert(stack_is_empty(&stack));
     }
 }
 

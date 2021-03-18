@@ -1,5 +1,3 @@
-#include <mydefines.h>
-
 // "t_" is a shortcut for "template<typename T>", imported from here
 #include "shared.h"
 

@@ -37,7 +37,7 @@ namespace DS
     }
 
     template<typename T, typename Comparator>
-    void bt_insert(Binary_Tree<T>** tree, T value, Comparator compare)
+    void bt_insert(Binary_Tree<T>** tree, const T value, Comparator compare)
     {
         Binary_Tree<T>* new_node = (Binary_Tree<T>*) malloc(sizeof(Binary_Tree<T>));
         new_node->value = value;
@@ -48,7 +48,10 @@ namespace DS
     
 
     template<typename T, typename Comparator>
-    Binary_Tree<T>* bt_find_node(Binary_Tree<T>* node, Comparator compare, Profiler* profiler = &_std_profiler)
+    Binary_Tree<T>* bt_find_node(
+        Binary_Tree<T>* node, 
+        Comparator compare, 
+        Profiler* profiler = &_std_profiler)
     {
         while(true)
         {
@@ -78,7 +81,10 @@ namespace DS
     }
 
     template<typename T, typename Comparator>
-    T bt_find(Binary_Tree<T>* tree, Comparator compare, Profiler* profiler = &_std_profiler)
+    T bt_find(
+        Binary_Tree<T>* tree, 
+        Comparator compare, 
+        Profiler* profiler = &_std_profiler)
     {
         auto node = bt_find_node(tree, compare, profiler);
         return node ? node->value : T();

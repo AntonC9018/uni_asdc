@@ -21,6 +21,10 @@
 #include "sort/selection.h"
 #include "sort/util.h"
 
+#include "ds/singly_linked_list.h"
+#include "ds/doubly_linked_list.h"
+
+
 void search_tests();
 void search_profile();
 void hash_map();
@@ -28,23 +32,162 @@ DS::Binary_Tree<Record*>* binary_tree_from_records(std::vector<Record>& records)
 void bt_print();
 void sort_tests();
 void sort_profile();
+void list_tests();
 
 int main()
 {
     _chdir("assets");
 
-    // {
-    //     // Lab. 1
-        // search_tests();
-        // bt_print();
-        // search_profile();
-        // hash_map();
-    // }
-
+    /*
+    {
+        // Lab. 1
+        search_tests();
+        bt_print();
+        search_profile();
+        hash_map();
+    }
+    */
+    /*
     {
         // Lab. 2
-        // sort_tests();
+        sort_tests();
         sort_profile();
+    }
+    */
+    {
+        // Lab. 3
+        list_tests();
+    }
+}
+
+void list_tests()
+{
+    using namespace DS;
+
+    {
+        auto list = singly_linked_list_make<int>();
+
+        assert(list.head == NULL);
+        assert(list.tail == NULL);
+
+        // 5
+        auto node_5 = list_insert_back(&list, 5);
+
+        assert(node_5->next == NULL);
+        assert(list.head && list.head == node_5);
+        assert(list.tail && list.tail == node_5);
+        assert(node_5->item == 5);
+
+        // 3 -> 5
+        auto node_3 = list_insert_front(&list, 3);
+        
+        assert(list.head == node_3);
+        assert(list.tail == node_5);
+
+        // 3 -> 1 -> 5
+        auto node_1 = list_insert_after(&list, node_3, 1);
+
+        assert(list.head->next == node_1);
+        assert(node_1->next    == node_5);
+
+        // 3 -> 1 -> 5 -> 2
+        auto node_2 = list_insert_after(&list, list.tail, 2);
+
+        assert(list.tail == node_2);
+
+        // 3 -> 1 -> 5
+        auto removed_2 = list_remove(&list, 2);
+
+        assert(list.tail == node_5);
+        free(removed_2);
+
+        // 3 -> 1
+        auto removed_5 = list_remove_after(&list, node_1);
+
+        assert(list.tail == node_1);
+        free(removed_5);
+
+        printf("Printing the list: "); 
+        list_print(&list);
+
+        list_destroy(&list);
+    }
+    {
+        auto list = doubly_linked_list_make<int>();
+
+        assert(list.head == NULL);
+        assert(list.tail == NULL);
+
+        // 1
+        auto node_1 = list_insert_front(&list, 1);
+
+        assert(node_1->item == 1);
+        assert(node_1->next == NULL);
+        assert(node_1->prev == NULL);
+        assert(list.head == node_1);
+        assert(list.tail == node_1);
+
+        // 1 -> 2
+        auto node_2 = list_insert_back(&list, 2);
+
+        assert(node_1->prev == NULL);
+        assert(node_1->next == node_2);
+        assert(node_2->prev == node_1);
+        assert(node_2->next == NULL);
+        assert(list.head == node_1);
+        assert(list.tail == node_2);
+
+        // 3 -> 1 -> 2
+        auto node_3 = list_insert_before(&list, node_1, 3);
+
+        assert(node_1->prev == node_3);
+        assert(node_3->next == node_1);
+        assert(node_3->prev == NULL);
+        assert(list.head == node_3);
+
+        // 3 -> 1 -> 2 -> 4
+        auto node_4 = list_insert_after(&list, node_2, 4);
+
+        assert(node_2->next == node_4);
+        assert(node_4->prev == node_2);
+        assert(node_4->next == NULL);
+        assert(list.tail == node_4);
+
+        // 3 -> 1 -> 2 -> 5 -> 4 
+        auto node_5 = list_insert_after(&list, node_2, 5); 
+
+        assert(node_2->next == node_5);
+        assert(node_4->prev == node_5);
+
+        // 3 -> 1 -> 2 -> 4
+        auto removed_5 = list_remove(&list, 5);
+
+        assert(removed_5 == node_5);
+        free(removed_5);
+
+        // 3 -> 1 -> 2
+        list_remove_node(&list, node_4);
+
+        assert(node_2->next == NULL);
+        assert(node_2 == list.tail);
+
+        // 1 -> 2
+        auto removed_3 = list_remove(&list, 3);
+
+        assert(removed_3 == node_3);
+        free(removed_3);
+
+        // 1 -> 2
+        auto removed_null = list_remove(&list, 3);
+        assert(removed_null == NULL);
+
+        printf("Printing the list forwards: "); 
+        list_print(&list);
+
+        printf("Printing the list backwards: "); 
+        list_print_backwards(&list);
+
+        list_destroy(&list);
     }
 }
 

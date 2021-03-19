@@ -49,7 +49,7 @@ Listele simplu înlănțiute sunt secvențe de noduri cu date, unde fiecare nod 
 
 ### Realizarea structurilor
 
-În codul ce urmează este definită structura de date ce reprezintă un nod simplu înlănțuit. `t_` în cod este # definit ca `template<typename T>`. Am făcut astfel, deoarece aceasta sintaxa lungă atrage prea multă atenție.
+În codul ce urmează este definită structura de date ce reprezintă un nod simplu înlănțuit. `t_` în cod este # definit ca `template<typename T>`. Am făcut astfel, deoarece această sintaxă lungă atrage prea multă atenție.
 ```cpp
 t_ struct Singly_Linked_Node
 {
@@ -58,7 +58,7 @@ t_ struct Singly_Linked_Node
 };
 ```
 
-Se poate realiza funcții direct pe această structură, însă deseori se mai definește o structură-wrapper, ce reprezintă întreaga listă. În această structură mereu se include un pointer la primul element, deseori un pointer la ultimul element și un contor de câte noduri avem în listă. Faptul că avem așa structură ceva complică realizarea funcțiilor, deoarece trebuie să ținem cont de primul și ultimul element, verificând, dacă un nod nou ar deveni ultimul sau primul element, sau dacă se șterge nodul terminal sau capul, incrementăm și decrementăm contorul, dar în același timp și face structura de date mai flexibilă. Eu am realizat o variantă ce îi ține minte pe *cap* (primul element) și *coada* (ultimul element). Le-am dat și mai multe nume acestor variabile, folosind `union`:
+Se poate realiza funcții direct pe această structură, însă deseori se mai definește o structură-wrapper, ce reprezintă întreaga listă. În această structură mereu se include un pointer la primul element, deseori un pointer la ultimul element și un contor de câte noduri avem în listă. Faptul că avem așa structură ceva complică realizarea funcțiilor, deoarece trebuie să ținem cont de primul și ultimul element, verificând, dacă un nod nou ar deveni ultimul sau primul element, sau dacă se șterge nodul terminal sau capul, incrementăm și decrementăm contorul, dar în același timp și face structura de date mai flexibilă. Eu am realizat o variantă ce îi ține minte pe *cap* (primul element) și *coadă* (ultimul element). Le-am dat și mai multe numi acestor variabile, folosind `union`:
 ```C++
 // In a valid list, these two are either both null, or both not null
 t_ struct Singly_Linked_List
@@ -101,7 +101,7 @@ Voi arăta aici cod numai la unele funcții.
 
 Adaugă un element dat înainte de capul curent și îl setează pe acest element ca capul curent. 
 
-Când punem un element nou în această poziție, trebuie să-l linkăm doar cu capul trecut din listă, și să resetăm capul stocat în structura wrapper a listei.
+Când punem un element nou în această poziție, trebuie să-l legăm doar cu capul trecut din listă, și să resetăm capul stocat în structură-wrapper a listei.
 
 Însă, deoarece ținem minte și de coada listei, dacă lista era vidă, capul nou introdus devine simultan și coada listei.
 
@@ -160,7 +160,7 @@ t_ Singly_Linked_Node<T>* list_insert_back(Singly_Linked_List<T>* list, const T 
 
 #### `list_insert_after()`
 
-Comentariul în cod demonstrează situația. În acest caz, deoarece inserăm elementul între două elemente, trebuie să adjustăm 2 pointeri.
+Comentariul în cod demonstrează situația. În acest caz, deoarece inserăm elementul între două elemente, trebuie să ajustăm 2 pointeri.
 
 ```C++
 t_ Singly_Linked_Node<T>* list_insert_after(
@@ -288,11 +288,11 @@ list_free(&list);
 
 ### Ajantajele și dezavantajele
 
-Principalul ajantaj al listelor este că lungimea lor este flexibilă și că elementele pot fi inserate în orice poziție din listă fără ca alte elemente să fie mutate în memorie: sunt schimbate numai linkurile între ei. 
+Principalul ajantaj al listelor este că lungimea lor este flexibilă și că elementele pot fi inserate în orice poziție din listă fără ca alte elemente să fie mutate în memorie: sunt schimbate numai legăturile între ele. 
 
-Dezajantajul este că datele nu stă în memorie consecutiv, ce încetinește lucrul cu ele. Înca listele nu permit random-acces (indexarea) eficientă. În liste, în special în listele care stochează date de dimensiuni mici, fie numere întregi pe 8 biți, jumătatea spațiului se pierde la pointeri către următoarele elemente. 
+Dezajantajul este că datele nu stă în memorie consecutiv, ce încetinește lucrul cu ele. Încă, listele nu permit random-acces (indexarea) eficientă. În liste, în special în listele care stochează date de dimensiuni mici, fie numere întregi pe 8 biți, jumătatea spațiului se pierde la pointeri către următoarele elemente. 
 
-În plus, este dificil de sortat așa liste, deoarece avem nevoie de ținut cont de mulți pointeri când interschimbăm elementele, și este imposibil să aplicăm oricare alt algoritm de căutare decât căutarea liniară. 
+În plus, este dificil de sortat așa liste, deoarece avem nevoie de ținut cont de mulți pointeri când interschimbăm elementele; este imposibil să aplicăm oricare alt algoritm de căutare decât căutarea liniară. 
 
 ## Liste dublu înlănțuite
 
@@ -545,7 +545,7 @@ list_free(&list);
 
 ### Avantajele și dezavantajele
 
-Avantajul principal al anume listei înlănțuite dublu asupra listei simplu înlănțuite este că orice element are posibilitate să se șteargă din lista în orice timp, astfel nu este recesar să aibă acces la predecesorul lui, ca să-l evoace. Al doilea avantaj este că înlănțuirea dublă permite iterarea bidirecțională, ce este util în unele cazuri.
+Avantajul principal al anume listei înlănțuite dublu asupra listei simplu înlănțuite este că orice element are posibilitate să se șteargă din listă în orice timp, astfel nu este necesar să aibă acces la predecesorul lui, ca să-l evoace. Al doilea avantaj este că înlănțuirea dublă permite iterarea bidirecțională, ce este util în unele cazuri.
 
 Dezavantejele sunt aceleași ca și la listele simplu înlănțuite, însă, în plus, listele dublu înlănțuite pierd și mai mult spațiu la pointeri, și operațiile de inserare și de ștergere necesită mai multe operații de ajustare a legăturilor.
 
@@ -557,7 +557,7 @@ Acest tip de liste, însă, este mai ușor de sortat, decât listele simplu înl
 
 ### Descriere
 
-Stiva este structura de date unde elementele și intră și sunt liate de pe top-ul stivei. Top-ul stivei poate fi fie indicele maxim în tabloul cu date, pentru stivele băzate pe tabouri, fie primul element într-o listă simplu înlănțuită, pentru stivele băzate pe liste.
+Stiva este structura de date unde elementele și intră și sunt luate de pe top-ul stivei. Top-ul stivei poate fi fie indicele maxim în tabloul cu date, pentru stivele băzate pe tabouri, fie primul element într-o listă simplu înlănțuită, pentru stivele băzate pe liste.
 
 Am realizat ambele variante de stive, le vom examina separat.
 
@@ -591,7 +591,7 @@ t_ inline void stack_push(Array_Stack<T>* stack, const T item)
 }
 ```
 
-Funcția `stack_pop()` face inversul. Aici aș putea face bounds-checking, verificând dacă contorul nu este nul.
+Funcția `stack_pop()` face inversul. Aici aș putea face bounds-checking, verificând dacă contorul nu este 0.
 
 ```C++
 t_ inline T stack_pop(Array_Stack<T>* stack)
@@ -615,7 +615,7 @@ t_ inline const T* stack_peek(const Array_Stack<T>* stack)
 [Vedeți întregul cod pentru stiva bazată pe un listă.](https://github.com/AntonC9018/uni_asdc/blob/master/src/ds/list_stack.h)
 
 
-În structura pentru stivă, definim numai head-ul listei, deoarece punem și ștergem elementele dintr-un singur loc.
+În structura pentru stivă, definim numai head-ul listei, deoarece punem și ștergem elementele la un singur loc.
 
 ```C++
 t_ struct List_Stack
@@ -636,7 +636,7 @@ t_ inline void stack_push(List_Stack<T>* stack, const T item)
 }
 ```
 
-Operația `pop()` tot este foarte simplă. Aici am putea verifica dacă stiva nu conține nici un element să anulăm operația, însă las aceasta pe utilizatorul interfeței.
+Operația `pop()` tot este foarte simplă. Aici am putea verifica dacă stiva nu conține nici un element să anulăm operația, însă las această considerare pe seama utilizatorul interfeței.
 
 ```C++
 t_ inline T stack_pop(List_Stack<T>* stack)
@@ -660,7 +660,7 @@ t_ inline const T* stack_peek(const List_Stack<T>* stack)
 
 ### Test
 
-Prin faptul că interfața la cele două realizări este exact aceeași, putem să le verificăm pe ambele printr-o funcție template.
+Prin faptul că interfața la cele două realizări este exact aceeași, putem să le verificăm pe ambele într-o singură funcție template.
 
 ```C++
 template<typename Stack>
@@ -705,7 +705,7 @@ void stack_test(Stack* stack)
 
 Este evident că prima metodă este mai aplicabilă în cazuri în care lungimea maximală a stivei se știe dinainte, sau când poate fi setată la o lungime maximă sigură, să nu fie posibil să avem o depășire. 
 
-Dacă avem o stivă tot bazăte pe un tablou dar de o lungime dinamică, atunci am putea avea problema de copierea excesivă a datelor, dacă regular punem pe stack elemente peste limită, ceea ce nu se va întâmpla dacă utilizăm stivele băzate pe liste.
+Dacă avem o stivă tot băzată pe un tablou dar de o lungime dinamică, atunci am putea avea problema copierii excesive a datelor, dacă regular punem pe stack elemente peste limită, ceea ce nu se va întâmpla dacă utilizăm stivele băzate pe liste.
 
 
 ## Cozile
@@ -725,7 +725,7 @@ Operațiile de bază a unei coade sunt:
 
 [Vedeți întregul cod pentru bufer ciclic.](https://github.com/AntonC9018/uni_asdc/blob/master/src/ds/cyclic_buffer.h)
 
-Bufer ciclic este un tablou de lungime fixă, în care elementele sunt inserate în poziții consecutive, iar luate din pozițiile trecute, după rând. Indicele inserării este calculat ca (indicele_precedent + 1) mod lungimea_tabloului, deci când se ajunge la capătul tabloului, se întoarce (loops over) la început.
+Bufer ciclic este un tablou de lungime fixă, în care elementele sunt inserate în poziții consecutive, iar luate din pozițiile trecute, după rând. Indicele inserării este calculat ca `(indicele_precedent + 1) mod lungimea_tabloului`, deci când se ajunge la capătul tabloului, se întoarce la început (loops over).
 
 Pentru a realiza aceasta, avem nevoie de 4 informații:
 - pointer la începutul tabloului;
@@ -788,7 +788,7 @@ t_ inline const T* cycbuf_peek(const Cyclic_Buffer<T>* cycbuf)
 
 [Vedeți întregul cod pentru coada băzată pe o listă.](https://github.com/AntonC9018/uni_asdc/blob/master/src/ds/queue.h)
 
-Așa coada este ea însuși esențial simplu o listă:
+Așa coadă este ea însuși esențial doar o listă:
 ```C++
 t_ using Queue = Singly_Linked_List<T>;
 ```
@@ -815,7 +815,7 @@ t_ inline T* q_peek(Queue<T>* queue)
 }
 ```
 
-Astfel, așa coadă este de fapt o listă cu o gamă de capacități special lititată.
+Astfel, așa coadă este de fapt o listă cu o gamă de capacități special limitată.
 
 ### Test
 
@@ -862,7 +862,7 @@ Aici avem o situație asemănătoare ca la stive: dacă știm dinainte lungimea 
 
 [Vedeți întregul cod modificat pentru arborele binar de căutare](https://github.com/AntonC9018/uni_asdc/blob/master/src/ds/binary_search_tree.h)
 
-În laborator 1 deja am realizat funcțiile pentru inserarea elementelor în arbore binar de căutare și de însăși căutarea, am realizat și funcțiile pentru printarea elementelor în ordine. Rămâne să demonstrez ștergerea și afișarea în diferite moduri.
+În laborator 1 deja am realizat funcțiile pentru inserarea elementelor în arbore binar de căutare și de însăși căutarea, am realizat și funcțiile pentru afișarea elementelor în ordine. Rămâne să demonstrez ștergerea și afișarea în diferite moduri.
 
 ### Ștergerea
 
@@ -928,15 +928,23 @@ Binary_Tree<T>* bst_remove(
         auto** min_leaf_ptr_in_parent = bst_min_ptr_in_parent(&node->right);
         auto*  min_leaf = *min_leaf_ptr_in_parent;
 
-        // Since the info about the parent of the node that is currently being removed
-        // has been lost, copy the value instead.
-        node->item = min_leaf->item;
+        // Otherwise, the node has 2 children.
+        // Find the parent of inorder successor (minimum in the right subtree).
+        auto** min_leaf_ptr_in_parent = bst_min_ptr_in_parent(&node->right);
+        auto*  min_leaf = *min_leaf_ptr_in_parent;
 
-        // We're free to delete this node, since it is terminal.
-        free(min_leaf);
+        // The leaf node takes its place.
+        min_leaf->right = node->right;
+        min_leaf->left = node->left;
 
-        // Remove the dangling pointer from the parent node.
+        // We're free to delete this node.
+        free(node);
+
+        // Remove the dangling pointer from the parent node to the leaf node.
         *min_leaf_ptr_in_parent = NULL;
+
+        // Resets the parent's pointer
+        return min_leaf;
     }
 
     return node;
@@ -945,7 +953,7 @@ Binary_Tree<T>* bst_remove(
 
 ### Afișarea
 
-Într-un arbore binar, elementul din dreapta este mai mare ca rădăcina, iar elementul din stângă — mereu mai mic. Pentru a afișa arborele în diferite moduri, trebuie pur și simplu să schimbăm ordinea în care parcurgem copiii și ne afișăm datele curente. 
+Într-un arbore binar, elementul din dreapta este mai mare ca rădăcina, iar elementul din stângă — mereu mai mic. Pentru a afișa arborele în diferite moduri, trebuie pur și simplu să schimbăm ordinea în care parcurgem fiii și ne afișăm datele curente. 
 
 Iată cele trei realizări pentru tipul de date `int`. În ultimul, am pus expresiile în mod aleator:
 

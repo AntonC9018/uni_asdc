@@ -291,15 +291,18 @@ namespace DS
             auto** min_leaf_ptr_in_parent = bst_min_ptr_in_parent(&node->right);
             auto*  min_leaf = *min_leaf_ptr_in_parent;
 
-            // Since the info about the parent of the node that is currently being removed
-            // has been lost, copy the value instead.
-            node->item = min_leaf->item;
+            // The leaf node takes its place.
+            min_leaf->right = node->right;
+            min_leaf->left = node->left;
 
-            // We're free to delete this node, since it is terminal.
-            free(min_leaf);
+            // We're free to delete this node.
+            free(node);
 
-            // Remove the dangling pointer from the parent node.
+            // Remove the dangling pointer from the parent node to the leaf node.
             *min_leaf_ptr_in_parent = NULL;
+
+            // Resets the parent's pointer
+            return min_leaf;
         }
 
         return node;

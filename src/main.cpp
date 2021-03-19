@@ -197,58 +197,41 @@ void queue_tests()
     }
 }
 
+template<typename Stack>
+void stack_test(Stack* stack)
+{
+    // initally empty
+    assert(stack_is_empty(stack));
+
+    // add some elements
+    stack_push(stack, 3);
+    stack_push(stack, 4);
+    stack_push(stack, 5);
+
+    // peek an element
+    assert(*stack_peek(stack) == 5);
+
+    // pop some back
+    assert(stack_pop(stack) == 5);
+    assert(stack_pop(stack) == 4);
+    assert(stack_pop(stack) == 3);
+
+    // emptied back
+    assert(stack_is_empty(stack));
+
+    stack_free(stack);
+}
 
 void stack_tests()
 {
     using namespace DS;
     {
         auto stack = array_stack_make<int>(10);
-
-        // initally empty
-        assert(stack_is_empty(&stack));
-
-        // add some elements
-        stack_push(&stack, 3);
-        stack_push(&stack, 4);
-        stack_push(&stack, 5);
-
-        // peek an element
-        assert(*stack_peek(&stack) == 5);
-
-        // pop some back
-        assert(stack_pop(&stack) == 5);
-        assert(stack_pop(&stack) == 4);
-        assert(stack_pop(&stack) == 3);
-
-        // emptied back
-        assert(stack_is_empty(&stack));
-
-        stack_free(&stack);
+        stack_test(&stack);
     }
-    using namespace DS;
     {
         auto stack = list_stack_make<int>();
-
-        // initally empty
-        assert(stack_is_empty(&stack));
-
-        // add some elements
-        stack_push(&stack, 3);
-        stack_push(&stack, 4);
-        stack_push(&stack, 5);
-
-        // peek an element
-        assert(*stack_peek(&stack) == 5);
-
-        // pop some back
-        assert(stack_pop(&stack) == 5);
-        assert(stack_pop(&stack) == 4);
-        assert(stack_pop(&stack) == 3);
-
-        // emptied back
-        assert(stack_is_empty(&stack));
-
-        stack_free(&stack);
+        stack_test(&stack);
     }
 }
 

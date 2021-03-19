@@ -213,8 +213,8 @@ namespace DS
         Doubly_Linked_List<T>* list, 
         Doubly_Linked_Node<T>* node)
     {
-        auto prev_node = node->prev;
         auto next_node = node->next;
+        auto prev_node = node->prev;
 
         if (list->head == node) list->head = next_node;
         // Since the node is not the head node, it must have a node before itself.

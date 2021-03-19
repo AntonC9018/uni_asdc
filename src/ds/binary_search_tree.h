@@ -291,7 +291,7 @@ namespace DS
             auto** min_leaf_ptr_in_parent = bst_min_ptr_in_parent(&node->right);
             auto*  min_leaf = *min_leaf_ptr_in_parent;
 
-            // Since the info about the parent of the node the is currently being removed
+            // Since the info about the parent of the node that is currently being removed
             // has been lost, copy the value instead.
             node->item = min_leaf->item;
 

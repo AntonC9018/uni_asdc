@@ -860,6 +860,8 @@ Aici avem o situație asemănătoare ca la stive: dacă știm dinainte lungimea 
 
 ## Arbore binar de căutare modificat
 
+[Vedeți întregul cod modificat pentru arborele binar de căutare](https://github.com/AntonC9018/uni_asdc/blob/master/src/ds/binary_search_tree.h)
+
 În laborator 1 deja am realizat funcțiile pentru inserarea elementelor în arbore binar de căutare și de însăși căutarea, am realizat și funcțiile pentru printarea elementelor în ordine. Rămâne să demonstrez ștergerea și afișarea în diferite moduri.
 
 ### Ștergerea

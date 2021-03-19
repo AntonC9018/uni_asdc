@@ -1,5 +1,8 @@
+#pragma once
+
 // "t_" is a shortcut for "template<typename T>", imported from here
 #include "shared.h"
+#include "singly_linked_list.h"
 
 namespace DS
 {
@@ -35,23 +38,21 @@ namespace DS
         return { NULL, NULL };   
     }
 
-    t_ void list_destroy(Doubly_Linked_List<T>* list)
+    t_ void list_free(Doubly_Linked_List<T>* list)
     {
-        auto node = list->head;
-
-        while (node)
-        {
-            auto next_node = node->next;
-            free(node);
-            node = next_node;
-        }
+        node_cascade_free(list->head);
     }
 
     t_ inline void list_clear(Doubly_Linked_List<T>* list)
     {
-        list_destroy(list);
+        list_free(list);
         list->head = NULL;
         list->tail = NULL;
+    }
+
+    t_ inline bool list_is_empty(const Doubly_Linked_List<T>* list)
+    {
+        return list->head == NULL;
     }
 
     t_ Doubly_Linked_Node<T>* list_insert_front(Doubly_Linked_List<T>* list, const T item)

@@ -1,3 +1,5 @@
+#pragma once
+
 // "t_" is a shortcut for "template<typename T>", imported from here
 #include "shared.h"
 
@@ -16,37 +18,42 @@ namespace DS
     {
         T* items;
         // Shows the next free index in which a new value may be inserted
-        size_t current_index;
+        size_t count;
     };
 
     t_ inline Array_Stack<T> array_stack_make(size_t size)
     {
         Array_Stack<T> result;
         result.items = (T*) malloc(size * sizeof(T));
-        result.current_index = 0;
+        result.count = 0;
         return result;
+    }
+
+    t_ inline void stack_free(Array_Stack<T>* stack)
+    {
+        free(stack->items);
     }
 
     t_ inline bool stack_is_empty(const Array_Stack<T>* stack)
     {
-        return stack->current_index == 0;
+        return stack->count == 0;
     }
 
     t_ inline T stack_pop(Array_Stack<T>* stack)
     {
-        stack->current_index--;
-        return stack->items[stack->current_index];
+        stack->count--;
+        return stack->items[stack->count];
     }
 
     t_ inline void stack_push(Array_Stack<T>* stack, const T item)
     {
-        stack->items[stack->current_index] = item;
-        stack->current_index++;
+        stack->items[stack->count] = item;
+        stack->count++;
     }
 
     t_ inline const T* stack_peek(const Array_Stack<T>* stack)
     {
-        return &stack->items[stack->current_index - 1];
+        return &stack->items[stack->count - 1];
     }
 
     // This logically should not make a copy of that value, but rather let you modify it.

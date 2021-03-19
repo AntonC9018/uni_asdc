@@ -25,6 +25,8 @@
 #include "ds/doubly_linked_list.h"
 #include "ds/array_stack.h"
 #include "ds/list_stack.h"
+#include "ds/cyclic_buffer.h"
+#include "ds/queue.h"
 
 
 void search_tests();
@@ -36,6 +38,7 @@ void sort_tests();
 void sort_profile();
 void list_tests();
 void stack_tests();
+void queue_tests();
 
 int main()
 {
@@ -60,9 +63,67 @@ int main()
     {
         // Lab. 3
         // list_tests();
-        stack_tests();
+        // stack_tests();
+        // queue_tests();
     }
 }
+
+     
+void queue_tests()
+{
+    using namespace DS;
+    {
+        auto cycbuf = cycbuf_make<int>(3);
+
+        assert(cycbuf_is_empty(&cycbuf));
+
+        cycbuf_enqueue(&cycbuf, 1);
+        cycbuf_enqueue(&cycbuf, 2);
+        cycbuf_enqueue(&cycbuf, 3);
+
+        assert(cycbuf_is_full(&cycbuf));
+
+        auto item_1 = cycbuf_dequeue(&cycbuf);
+
+        assert(!cycbuf_is_full(&cycbuf));
+        assert(cycbuf.count == 2);
+        assert(item_1 == 1);
+
+        cycbuf_enqueue(&cycbuf, 4);
+
+        auto item_2 = *cycbuf_peek(&cycbuf);
+
+        assert(item_2 == 2);
+
+        cycbuf_dequeue(&cycbuf);
+        cycbuf_dequeue(&cycbuf);
+        cycbuf_dequeue(&cycbuf);
+
+        assert(cycbuf_is_empty(&cycbuf));
+
+        cycbuf_free(&cycbuf);
+    }
+    {
+        auto queue = q_make<int>();
+
+        assert(q_is_empty(&queue));
+
+        q_enqueue(&queue, 1);
+        q_enqueue(&queue, 2);
+        q_enqueue(&queue, 3);
+
+        assert(*q_peek(&queue) == 1);
+
+        assert(q_dequeue(&queue) == 1);
+        assert(q_dequeue(&queue) == 2);
+        assert(q_dequeue(&queue) == 3);
+
+        assert(q_is_empty(&queue));
+
+        q_free(&queue);
+    }
+}
+
 
 void stack_tests()
 {
@@ -88,6 +149,8 @@ void stack_tests()
 
         // emptied back
         assert(stack_is_empty(&stack));
+
+        stack_free(&stack);
     }
     using namespace DS;
     {
@@ -111,6 +174,8 @@ void stack_tests()
 
         // emptied back
         assert(stack_is_empty(&stack));
+
+        stack_free(&stack);
     }
 }
 
@@ -164,7 +229,7 @@ void list_tests()
         printf("Printing the list: "); 
         list_print(&list);
 
-        list_destroy(&list);
+        list_free(&list);
     }
     {
         auto list = doubly_linked_list_make<int>();
@@ -241,7 +306,7 @@ void list_tests()
         printf("Printing the list backwards: "); 
         list_print_backwards(&list);
 
-        list_destroy(&list);
+        list_free(&list);
     }
 }
 

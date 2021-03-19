@@ -1,3 +1,5 @@
+#pragma once
+
 #include <stdio.h>
 #include "../profiler.h"
 #include <mydefines.h>

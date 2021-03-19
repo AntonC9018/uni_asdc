@@ -1,3 +1,5 @@
+#pragma once
+
 // "t_" is a shortcut for "template<typename T>", imported from here
 #include "shared.h"
 
@@ -34,10 +36,8 @@ namespace DS
         return { NULL, NULL };   
     }
 
-    t_ void list_destroy(Singly_Linked_List<T>* list)
+    t_ void node_cascade_free(T* node)
     {
-        auto node = list->head;
-
         while (node)
         {
             auto next_node = node->next;
@@ -46,11 +46,21 @@ namespace DS
         }
     }
 
+    t_ void list_free(Singly_Linked_List<T>* list)
+    {
+        node_cascade_free(list->head);
+    }
+
     t_ inline void list_clear(Singly_Linked_List<T>* list)
     {
-        list_destroy(list);
+        list_free(list);
         list->head = NULL;
         list->tail = NULL;
+    }
+
+    t_ inline bool list_is_empty(const Singly_Linked_List<T>* list)
+    {
+        return list->head == NULL;
     }
 
     t_ Singly_Linked_Node<T>* list_insert_front(Singly_Linked_List<T>* list, const T item)
@@ -201,20 +211,25 @@ namespace DS
         return const_cast<Singly_Linked_Node<T>*>(const_node);
     }
 
+    t_ Singly_Linked_Node<T>* list_remove_head(Singly_Linked_List<T>* list)
+    {
+        auto removed_node = list->head;
+        list->head = removed_node->next;
+
+        // If it's both head and tail, the result is going to be an empty list
+        if (list->tail == removed_node)
+            list->tail = NULL;
+
+        return removed_node;
+    }
+
     t_ Singly_Linked_Node<T>* list_remove(Singly_Linked_List<T>* list, const T item)
     {
         if (list->head)
         {
             if (list->head->item == item)
             {
-                auto removed_node = list->head;
-                list->head = removed_node->next;
-
-                // If it's both head and tail, the result is going to be an empty list
-                if (list->tail == removed_node)
-                    list->tail = NULL;
-
-                return removed_node;
+                return list_remove_head(list);
             }
 
             auto node_before = list_find_node_before(list, item);

@@ -1,5 +1,8 @@
+#pragma once
+
 // "t_" is a shortcut for "template<typename T>", imported from here
 #include "shared.h"
+#include "singly_linked_list.h"
 
 namespace DS
 {
@@ -11,6 +14,17 @@ namespace DS
     t_ inline List_Stack<T> list_stack_make()
     {
         return { NULL };
+    }
+
+    t_ inline void stack_free(List_Stack<T>* stack)
+    {
+        node_cascade_free(stack->top);
+    }
+
+    t_ inline void stack_clear(List_Stack<T>* stack)
+    {
+        stack_free(stack);
+        stack->top = NULL;
     }
 
     t_ inline bool stack_is_empty(const List_Stack<T>* stack)

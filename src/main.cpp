@@ -40,6 +40,7 @@ void list_tests();
 void stack_tests();
 void queue_tests();
 void bst_removal();
+void bst_pretty();
 
 int main()
 {
@@ -66,8 +67,36 @@ int main()
         // list_tests();
         // stack_tests();
         // queue_tests();
-        bst_removal();
+        // bst_removal();
+        bst_pretty();
     }
+}
+
+void bst_pretty()
+{
+    using namespace DS;
+    auto f = [](char a, char b) { return a - b; };
+    Binary_Tree<char>* bst = NULL;
+    bst_insert(&bst, 'l', f);
+    bst_insert(&bst, 'f', f);
+    bst_insert(&bst, 'q', f);
+    bst_insert(&bst, 'c', f);
+    bst_insert(&bst, 'h', f);
+    bst_insert(&bst, 'n', f);
+    bst_insert(&bst, 'u', f);
+    bst_insert(&bst, 'b', f);
+    bst_insert(&bst, 'a', f);
+    bst_insert(&bst, 'd', f);
+    bst_insert(&bst, 'e', f);
+    bst_insert(&bst, 'j', f);
+    bst_insert(&bst, 'i', f);
+    bst_insert(&bst, 'm', f);
+    bst_insert(&bst, 'p', f);
+    bst_insert(&bst, 't', f);
+    bst_insert(&bst, 'x', f);
+    bst_insert(&bst, 'w', f);
+    bst_insert(&bst, 'z', f);
+    bst_graph(bst);
 }
 
 void bst_removal()

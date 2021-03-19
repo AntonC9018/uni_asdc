@@ -4,6 +4,7 @@
 
 #include "../profiler.h"
 #include "shared.h"
+#include "cyclic_buffer.h"
 
 namespace DS
 {
@@ -306,5 +307,92 @@ namespace DS
         }
 
         return node;
+    }
+
+    t_ int bts_max_depth(Binary_Tree<T>* node)
+    {
+        if (!node) return -1;
+        int left  = bts_max_depth(node->left);
+        int right = bts_max_depth(node->right);
+        return 1 + std::max(left, right);
+    }
+
+    int space_func(int depth)
+    {
+        if (depth == 0) return 0;
+        if (depth == 1) return 2;
+        return space_func(depth - 1) * 2 + 1;
+    }
+
+    void bst_graph(Binary_Tree<char>* tree)
+    {
+        int depth = bts_max_depth(tree);
+        int space = space_func(depth);
+        auto buffer0 = cycbuf_make<Binary_Tree<char>*>(1 << depth);
+        auto q0 = &buffer0;
+
+        cycbuf_enqueue(q0, tree);
+
+        while (depth > 0)
+        {
+            int count = buffer0.count;
+
+            for (int i = 0; i < count; i++)
+            {
+                printf("%*c", space, ' ');
+                auto it = cycbuf_dequeue(q0);
+                if (it)
+                {
+                    printf("%c", it->item);
+                    cycbuf_enqueue(q0, it->left);
+                    cycbuf_enqueue(q0, it->right);
+                }
+                else
+                {
+                    printf(" ");
+                    cycbuf_enqueue(q0, it);
+                    cycbuf_enqueue(q0, it);
+                }
+                printf("%*c", space + 1, ' ');
+            }
+            printf("\n");
+
+            int offset = space - 1;
+            int next_space = (space - 1) / 2;
+
+            while (offset > next_space)
+            {
+                for (int i = 0; i < count; i++)
+                    printf("%*c/%*c\\%*c ", offset, ' ', 2 * (space - offset) - 1, ' ', offset, ' ');
+                printf("\n");
+                offset--;
+            }
+
+            space = next_space;
+            depth--;
+        }
+
+        while (!cycbuf_is_empty(q0))
+        {
+            auto it = cycbuf_dequeue(q0);
+
+            if (it)
+                printf("%c", it->item);
+            else
+                printf(" ");
+
+            printf("   ");
+
+            auto it1 = cycbuf_dequeue(q0);
+
+            if (it1)
+                printf("%c", it1->item);
+            else
+                printf(" ");
+
+            printf(" ");
+        }
+
+        cycbuf_free(q0);
     }
 }

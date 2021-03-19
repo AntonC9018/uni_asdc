@@ -928,11 +928,6 @@ Binary_Tree<T>* bst_remove(
         auto** min_leaf_ptr_in_parent = bst_min_ptr_in_parent(&node->right);
         auto*  min_leaf = *min_leaf_ptr_in_parent;
 
-        // Otherwise, the node has 2 children.
-        // Find the parent of inorder successor (minimum in the right subtree).
-        auto** min_leaf_ptr_in_parent = bst_min_ptr_in_parent(&node->right);
-        auto*  min_leaf = *min_leaf_ptr_in_parent;
-
         // The leaf node takes its place.
         min_leaf->right = node->right;
         min_leaf->left = node->left;

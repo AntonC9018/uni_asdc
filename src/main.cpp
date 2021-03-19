@@ -12,7 +12,7 @@
 #include "search/binary.h"
 #include "search/exponential.h"
 
-#include "ds/binary_tree.h"
+#include "ds/binary_search_tree.h"
 #include "ds/hash_map.h"
 
 #include "sort/merge.h"
@@ -33,26 +33,27 @@ void search_tests();
 void search_profile();
 void hash_map();
 DS::Binary_Tree<Record*>* binary_tree_from_records(std::vector<Record>& records);
-void bt_print();
+void bst_print();
 void sort_tests();
 void sort_profile();
 void list_tests();
 void stack_tests();
 void queue_tests();
+void bst_removal();
 
 int main()
 {
     _chdir("assets");
 
-    /*
+    
     {
         // Lab. 1
-        search_tests();
-        bt_print();
-        search_profile();
-        hash_map();
+        // search_tests();
+        // bst_print();
+        // search_profile();
+        // hash_map();
     }
-    */
+    
     /*
     {
         // Lab. 2
@@ -65,9 +66,81 @@ int main()
         // list_tests();
         // stack_tests();
         // queue_tests();
+        bst_removal();
     }
 }
 
+void bst_removal()
+{
+    using namespace DS;
+    auto cmp_ints = [](int a, int b) { return a - b; };
+    auto find_int = [](int b){ return [=](int a) { return a - b; }; };
+
+    Binary_Tree<int>* bst = NULL;
+
+    //          3              //
+    //         / \             //
+    //        /   \            //
+    //       1     5           //
+    //      / \   / \          //
+    //     0   2 4   6         //
+    bst_insert(&bst, 3, cmp_ints);
+    bst_insert(&bst, 1, cmp_ints);
+    bst_insert(&bst, 5, cmp_ints);
+    bst_insert(&bst, 0, cmp_ints);
+    bst_insert(&bst, 2, cmp_ints);
+    bst_insert(&bst, 4, cmp_ints);
+    bst_insert(&bst, 6, cmp_ints);
+    bst_print_inorder(bst); printf("\n");
+
+    // -------------------------------------------------------- //
+    // Simplest case, leaf node                                 //
+    // -------------------------------------------------------- //
+    //         3                  3                   3         //
+    //        / \                / \                 / \        //
+    //       /   \              /   \               /   \       //
+    //      1     5     ->     1     5      ->     1     5      //
+    //     / \   / \          / \   / \             \   / \     //
+    //    0   2 4   6        x   2 4   6             2 4   6    //
+    // -------------------------------------------------------- //
+    bst = bst_remove(bst, find_int(0));
+    bst_print_inorder(bst); printf("\n");
+
+    // -------------------------------------------------------- //
+    // One child                                                //
+    // -------------------------------------------------------- //
+    //       3                    3                   3         //
+    //      / \                  / \                 / \        //
+    //     /   \                /   \               /   \       //
+    //    1     5      ->      x     5      ->     2     5      //
+    //     \   / \              \   / \                 / \     //
+    //      2 4   6              2 4   6               4   6    //
+    // -------------------------------------------------------- //
+    bst = bst_remove(bst, find_int(1));
+    bst_print_inorder(bst); printf("\n");
+
+    // -------------------------------------------------------- //
+    // Two children                                             //
+    // -------------------------------------------------------- //
+    //       3                    x                   4         //
+    //      / \                  / \                 / \        //
+    //     /   \                /   \               /   \       //
+    //    2     5      ->      2     5      ->     2     5      //
+    //         / \                  / \                   \     //
+    //        4   6                4   6                   6    //
+    // -------------------------------------------------------- //
+    bst = bst_remove(bst, find_int(3)); 
+    bst_print_inorder(bst); printf("\n");
+
+    // Make sure they are in this order
+    assert(              bst->item == 4);
+    assert(        bst->left->item == 2);
+    assert(       bst->right->item == 5);
+    assert(       bst->right->left == NULL);
+    assert(bst->right->right->item == 6);
+
+    bst_free(bst);
+}
      
 void queue_tests()
 {
@@ -418,7 +491,7 @@ DS::Binary_Tree<Record*>* binary_tree_from_records(std::vector<Record>& records)
     DS::Binary_Tree<Record*>* t = NULL;
     for (auto& record : records)
     {
-        DS::bt_insert(&t, &record, [](auto a, auto b) { return (s32)a->id - (s32)b->id; });
+        DS::bst_insert(&t, &record, [](auto a, auto b) { return (s32)a->id - (s32)b->id; });
         // or insert(&t, record.id, ...);
     }
     return t;
@@ -441,19 +514,32 @@ void search_tests()
     auto t = binary_tree_from_records(records); 
 
     for (u32 i = 1; i <= records_ordered.size(); i++)
-        assert(DS::bt_find(t, [&](auto rec) { return (s32)rec->id - (s32)(i); })->id == i);
+        assert((*DS::bst_find(t, [&](auto rec) { return (s32)rec->id - (s32)(i); }))->id == i);
 
     destroy_records(records);
     destroy_records(records_ordered);
 }
 
 // Should be printed in ascending order
-void bt_print()
+void bst_print()
 {
     auto records = read_records_from_csv("data_unordered.csv");
     auto bt      = binary_tree_from_records(records);
-    DS::bt_print(bt);
+
+    printf("Printing INORDER: \n\n");
+    DS::bst_print_inorder(bt);
+    printf("\n\n");
+
+    printf("Printing OUTORDER: \n\n");
+    DS::bst_print_outorder(bt);
+    printf("\n\n");
+
+    printf("Printing NOORDER: \n\n");
+    DS::bst_print_noorder(bt);
+    printf("\n\n");
+
     destroy_records(records);
+    bst_free(bt);
 }
 
 void search_profile()
@@ -508,7 +594,7 @@ void search_profile()
 
             [&](auto p) { 
                 Binary_Tree<Record*>* t = binary_tree_from_records(records);
-                bt_destroy(t);
+                bst_free(t);
             },
 
             num_experiments
@@ -518,7 +604,7 @@ void search_profile()
 
         profiler_perform_experiments(
             "Binary tree searches (constructed beforehand)",
-            [&](auto p) { bt_find(t, 
+            [&](auto p) { bst_find(t, 
                 [&](auto rec) { return (s32)rec->id - (s32)id(p); }, p); },
             num_experiments * 100
         );

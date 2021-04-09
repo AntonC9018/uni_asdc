@@ -28,6 +28,8 @@
 #include "ds/cyclic_buffer.h"
 #include "ds/queue.h"
 
+#include "ds/array/iliffe.h"
+#include "ds/array/ranged_iliffe.h"
 
 void search_tests();
 void search_profile();
@@ -41,6 +43,7 @@ void stack_tests();
 void queue_tests();
 void bst_removal();
 void bst_pretty();
+void vectors_test();
 
 int main()
 {
@@ -68,7 +71,51 @@ int main()
         // stack_tests();
         // queue_tests();
         // bst_removal();
-        bst_pretty();
+        // bst_pretty();
+    }
+    {
+        // Lab 4.
+        vectors_test();
+    }
+}
+
+void vectors_test()
+{
+    using namespace DS;
+
+    {
+        auto iliffe = Iliffe_Vector<int, 2>::make(3);
+        for (size_t i = 0; i < iliffe.size; i++)
+        {
+            iliffe[i] = Iliffe_Vector<int, 1>::make(2);
+            iliffe[i][0] = i;
+            iliffe[i][1] = i + 1;
+        }
+
+        for (size_t i = 0; i < iliffe.size; i++)
+        {
+            for (size_t j = 0; j < iliffe[i].size; j++)
+            {
+                printf("[%zu][%zu] = %i\n", i, j, iliffe[i][j]);
+            }
+        }
+    }
+    {
+        auto iliffe = Ranged_Iliffe_Vector<int, 2>::make({-1, 1});
+        for (ssize_t i = iliffe.range.start; i <= iliffe.range.end; i++)
+        {
+            iliffe[i] = Ranged_Iliffe_Vector<int, 1>::make({-1, 0});
+            iliffe[i][-1] = i;
+            iliffe[i][ 0] = i + 1;
+        }
+
+        for (ssize_t i = iliffe.range.start; i <= iliffe.range.end; i++)
+        {
+            for (ssize_t j = iliffe[i].range.start; j <= iliffe[i].range.end; j++)
+            {
+                printf("[%2zi][%2zi] = %i\n", i, j, iliffe[i][j]);
+            }
+        }
     }
 }
 

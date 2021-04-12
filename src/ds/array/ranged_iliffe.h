@@ -1,6 +1,6 @@
 #pragma once
 #include <mydefines.h>
-#include "range.h"
+#include "shared.h"
 #include "../shared.h"
 
 namespace DS
@@ -37,7 +37,7 @@ namespace DS
     template<typename T, size_t N_DIM>
     size_t Ranged_Iliffe_Vector<T, N_DIM>::size()
     {
-        return range.length();
+        return range.size();
     }
 
     template<typename T, size_t N_DIM>
@@ -95,7 +95,7 @@ namespace DS
     template<typename T>
     size_t Ranged_Iliffe_Vector<T, 1>::size()
     {
-        return range.length();
+        return range.size();
     }
 
     template<typename T>

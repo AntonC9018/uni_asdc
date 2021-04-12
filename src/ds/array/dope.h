@@ -1,6 +1,6 @@
 #pragma once
 #include <mydefines.h>
-#include "range.h"
+#include "shared.h"
 #include "../shared.h"
 
 namespace DS
@@ -16,7 +16,7 @@ namespace DS
         void init_cache_row_major();
         void init_cache_col_major();
         void init_constants();
-        size_t map_indices_to_physical_index(ssize_t indices[N_DIM]);
+        size_t map_indices_to_physical_index(const ssize_t indices[N_DIM]) const;
     };
     
     template<size_t N_DIM>
@@ -27,34 +27,26 @@ namespace DS
         for (size_t i = 0; i < N_DIM; i++)
         {
             index_cost_constant_term += index_costs[i] * ranges[i].start; 
-            total_length *= ranges[i].length();
+            total_length *= ranges[i].size();
         }
     }
 
     template<size_t N_DIM>
     void Dope_Vector<N_DIM>::init_cache_row_major()
     {
-        index_costs[N_DIM - 1] = 1;
-        for (size_t i = N_DIM - 1; i > 0; i--)
-        {
-            index_costs[i - 1] = index_costs[i] * (ranges[i].end - ranges[i].start + 1);
-        }
+        init_costs_row_major(index_costs, ranges, N_DIM);
         init_constants();
     }
 
     template<size_t N_DIM>
     void Dope_Vector<N_DIM>::init_cache_col_major()
     {
-        index_costs[0] = 1;
-        for (size_t i = 1; i < N_DIM; i++)
-        {
-            index_costs[i] = index_costs[i - 1] * (ranges[i - 1].end - ranges[i - 1].start + 1);
-        }
+        init_costs_col_major(index_costs, ranges, N_DIM);
         init_constants();
     }
 
     template<size_t N_DIM>
-    size_t Dope_Vector<N_DIM>::map_indices_to_physical_index(ssize_t indices[N_DIM])
+    size_t Dope_Vector<N_DIM>::map_indices_to_physical_index(const ssize_t indices[N_DIM]) const
     {
         size_t index = 0;
         for (size_t i = 0; i < N_DIM; i++)

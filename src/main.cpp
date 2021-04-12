@@ -31,6 +31,7 @@
 #include "ds/array/iliffe.h"
 #include "ds/array/ranged_iliffe.h"
 #include "ds/array/dope_wrapper.h"
+#include "ds/array/raw_wrapper.h"
 
 void search_tests();
 void search_profile();
@@ -45,6 +46,7 @@ void queue_tests();
 void bst_removal();
 void bst_pretty();
 void vectors_test();
+template<typename Wrapper_Type>
 void dope_vector_test_mode(DS::Major_Order mode);
 
 int main()
@@ -120,14 +122,18 @@ void vectors_test()
         }
     }
     {
-        dope_vector_test_mode(ROW_MAJOR);
-        dope_vector_test_mode(COL_MAJOR);
+        dope_vector_test_mode<Dope_Wrapper<int, 4>>(ROW_MAJOR);
+        dope_vector_test_mode<Dope_Wrapper<int, 4>>(COL_MAJOR);
+
+        dope_vector_test_mode<Raw_Array_Wrapper<int, 4>>(ROW_MAJOR);
+        dope_vector_test_mode<Raw_Array_Wrapper<int, 4>>(COL_MAJOR);
     }
 }
 
+template<typename Wrapper_Type>
 void dope_vector_test_mode(DS::Major_Order mode)
 {
-    DS::Dope_Wrapper<int, 4> arr;
+    Wrapper_Type arr;
     arr.set_range(0, { 3,  6}); 
     arr.set_range(1, { 1,  3}); 
     arr.set_range(2, {-3, -1});
@@ -173,7 +179,7 @@ void dope_vector_test_mode(DS::Major_Order mode)
     #undef j
     #undef k
 
-    // should print the same as ITERATE_ROWS
+    // should always print secventially
     for (size_t i = 0; i < arr.size(); i++)
     {
         printf("arr[%zu] = %i\n", i, arr.items[i]);

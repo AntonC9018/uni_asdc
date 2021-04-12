@@ -73,6 +73,6 @@ namespace DS
     template<typename T, size_t N_DIM>
     void Dope_Wrapper<T, N_DIM>::free()
     {
-        free(items);
+        std::free(items);
     }
 }

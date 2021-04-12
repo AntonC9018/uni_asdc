@@ -45,9 +45,16 @@ void stack_tests();
 void queue_tests();
 void bst_removal();
 void bst_pretty();
-void vectors_test();
+void arrays_test();
 template<typename Wrapper_Type>
-void dope_vector_test_mode(DS::Major_Order mode);
+void array_test_mode(DS::Major_Order mode);
+void arrays_profile();
+template<typename Wrapper_Type>
+void array_profile_rowcol(Profiler* profiler);
+template<typename Wrapper_Type>
+void array_profile_sequential(Profiler* profiler);
+void iliffe_profile_rows(Profiler* profiler);
+void iliffe_profile_cols(Profiler* profiler);
 
 int main()
 {
@@ -79,11 +86,12 @@ int main()
     }
     {
         // Lab 4.
-        vectors_test();
+        // arrays_test();
+        arrays_profile();
     }
 }
 
-void vectors_test()
+void arrays_test()
 {
     using namespace DS;
 
@@ -122,41 +130,90 @@ void vectors_test()
         }
     }
     {
-        dope_vector_test_mode<Dope_Wrapper<int, 4>>(ROW_MAJOR);
-        dope_vector_test_mode<Dope_Wrapper<int, 4>>(COL_MAJOR);
+        array_test_mode<Dope_Wrapper<int, 4>>(ROW_MAJOR);
+        array_test_mode<Dope_Wrapper<int, 4>>(COL_MAJOR);
 
-        dope_vector_test_mode<Raw_Array_Wrapper<int, 4>>(ROW_MAJOR);
-        dope_vector_test_mode<Raw_Array_Wrapper<int, 4>>(COL_MAJOR);
+        array_test_mode<Raw_Array_Wrapper<int, 4>>(ROW_MAJOR);
+        array_test_mode<Raw_Array_Wrapper<int, 4>>(COL_MAJOR);
     }
 }
 
-template<typename Wrapper_Type>
-void dope_vector_test_mode(DS::Major_Order mode)
-{
-    Wrapper_Type arr;
-    arr.set_range(0, { 3,  6}); 
-    arr.set_range(1, { 1,  3}); 
-    arr.set_range(2, {-3, -1});
-    arr.set_range(3, {-5, -3});
-    arr.init(mode); 
+static DS::Index_Range array_ranges[] { {3, 6}, {1, 3}, {-3, -1}, {-5, -3} };
 
+void arrays_profile()
+{
+    using namespace DS;
+    size_t num_experiments = 100000;
+
+    profiler_perform_experiments(
+        "Raw_Array_Wrapper --- ROW/COLUMN MAJOR",
+        array_profile_rowcol<Raw_Array_Wrapper<int, 4>>,
+        num_experiments
+    );
+
+    profiler_perform_experiments(
+        "Raw_Array_Wrapper --- SEQUENTIAL",
+        array_profile_sequential<Raw_Array_Wrapper<int, 4>>,
+        num_experiments
+    );
+
+    profiler_perform_experiments(
+        "Dope_Wrapper --- ROW/COLUMN MAJOR",
+        array_profile_rowcol<Dope_Wrapper<int, 4>>,
+        num_experiments
+    );
+
+    profiler_perform_experiments(
+        "Dope_Wrapper --- SEQUENTIAL",
+        array_profile_sequential<Dope_Wrapper<int, 4>>,
+        num_experiments
+    );
+
+    profiler_perform_experiments(
+        "Iliffe --- ROW MAJOR",
+        iliffe_profile_rows,
+        num_experiments
+    );
+
+    profiler_perform_experiments(
+        "Iliffe --- COLUMN MAJOR",
+        iliffe_profile_cols,
+        num_experiments
+    );
+}
+
+
+#define CREATE_ARRAY(mode)             \
+    Wrapper_Type arr;                  \
+    arr.set_range(0, array_ranges[0]); \
+    arr.set_range(1, array_ranges[1]); \
+    arr.set_range(2, array_ranges[2]); \
+    arr.set_range(3, array_ranges[3]); \
+    arr.init((mode));                  \
     ssize_t indices[4];
-    #define i indices[0]
-    #define j indices[1]
-    #define k indices[2]
-    #define w indices[3]
-    
-    #define ITERATE_ROWS \
-        for (i = arr.start(0); i <= arr.end(0); i++) \
-        for (j = arr.start(1); j <= arr.end(1); j++) \
-        for (k = arr.start(2); k <= arr.end(2); k++) \
-        for (w = arr.start(3); w <= arr.end(3); w++) 
-    
-    #define ITERATE_COLS \
-        for (w = arr.start(3); w <= arr.end(3); w++) \
-        for (k = arr.start(2); k <= arr.end(2); k++) \
-        for (j = arr.start(1); j <= arr.end(1); j++) \
-        for (i = arr.start(0); i <= arr.end(0); i++) 
+
+#define i indices[0]
+#define j indices[1]
+#define k indices[2]
+#define w indices[3]
+
+#define ITERATE_ROWS \
+    for (i = arr.start(0); i <= arr.end(0); i++) \
+    for (j = arr.start(1); j <= arr.end(1); j++) \
+    for (k = arr.start(2); k <= arr.end(2); k++) \
+    for (w = arr.start(3); w <= arr.end(3); w++) 
+
+#define ITERATE_COLS \
+    for (w = arr.start(3); w <= arr.end(3); w++) \
+    for (k = arr.start(2); k <= arr.end(2); k++) \
+    for (j = arr.start(1); j <= arr.end(1); j++) \
+    for (i = arr.start(0); i <= arr.end(0); i++) 
+
+
+template<typename Wrapper_Type>
+void array_test_mode(DS::Major_Order mode)
+{
+    CREATE_ARRAY(mode);
 
     size_t el_count = 0;
 
@@ -165,9 +222,7 @@ void dope_vector_test_mode(DS::Major_Order mode)
     else
         ITERATE_COLS { arr[indices] = el_count++; }
 
-
     assert(el_count == arr.size());
-    printf("\n");
 
     ITERATE_ROWS { printf("arr[%2zi][%2zi][%2zi][%2zi] = %i\n", i, j, k, w, arr[indices]); }
     printf("\n");
@@ -175,16 +230,103 @@ void dope_vector_test_mode(DS::Major_Order mode)
     ITERATE_COLS { printf("arr[%2zi][%2zi][%2zi][%2zi] = %i\n", i, j, k, w, arr[indices]); }
     printf("\n");
 
-    #undef i
-    #undef j
-    #undef k
-
-    // should always print secventially
-    for (size_t i = 0; i < arr.size(); i++)
+    // should always print sequentially
+    for (size_t _i = 0; _i < arr.size(); _i++)
     {
-        printf("arr[%zu] = %i\n", i, arr.items[i]);
+        printf("arr[%zu] = %i\n", _i, arr.items[_i]);
     }   
+    printf("\n");
+ 
+    arr.free();
 }
+
+template<typename Wrapper_Type>
+void array_profile_rowcol(Profiler* profiler)
+{
+    CREATE_ARRAY(DS::ROW_MAJOR);
+    int sum = 0;
+    ITERATE_ROWS { 
+        sum += arr[indices]; 
+        profiler->num_iters++; 
+    }
+    arr.free();
+}
+
+template<typename Wrapper_Type>
+void array_profile_sequential(Profiler* profiler)
+{
+    CREATE_ARRAY(DS::ROW_MAJOR);
+    int sum = 0;
+    for (size_t _i = 0; _i < arr.size(); _i++)
+    {
+        sum += arr.items[_i];
+        profiler->num_iters++; 
+    }
+    arr.free(); 
+}
+
+#undef i
+#undef j
+#undef k
+#undef w
+
+DS::Ranged_Iliffe_Vector<int, 4> iliffe_create_vector()
+{
+    using namespace DS;
+
+    auto arr = Ranged_Iliffe_Vector<int, 4>::make(array_ranges[0]);
+    for (ssize_t i = array_ranges[0].start; i <= array_ranges[0].end; i++)
+    {
+        arr[i] = Ranged_Iliffe_Vector<int, 3>::make(array_ranges[1]);
+        for (ssize_t j = array_ranges[1].start; j <= array_ranges[1].end; j++)
+        {
+            arr[i][j] = Ranged_Iliffe_Vector<int, 2>::make(array_ranges[2]);
+            for (ssize_t k = array_ranges[2].start; k <= array_ranges[2].end; k++)
+            {
+                arr[i][j][k] = Ranged_Iliffe_Vector<int, 1>::make(array_ranges[3]);
+            }   
+        }   
+    }
+    return arr;
+}
+
+void iliffe_profile_rows(Profiler* profiler)
+{
+    auto arr = iliffe_create_vector();
+    
+    int sum = 0;
+    for (ssize_t i = arr.range.start;          i <= arr.range.end;          i++)
+    for (ssize_t j = arr[i].range.start;       j <= arr[i].range.end;       j++)
+    for (ssize_t k = arr[i][j].range.start;    k <= arr[i][j].range.end;    k++)
+    for (ssize_t w = arr[i][j][k].range.start; w <= arr[i][j][k].range.end; w++)
+    {
+        sum += arr[i][j][k][w];
+        profiler->num_iters++;
+    }
+
+    arr.free();
+}
+
+void iliffe_profile_cols(Profiler* profiler)
+{
+    auto arr = iliffe_create_vector();
+    int sum = 0;
+    
+    // this is the best approximation we can get
+    // since the vectors containing the ranges are not accessible in column-major order
+    // there is no way to iterate over them, without knowing the ranges in advance.
+    for (ssize_t w = array_ranges[3].start; w <= array_ranges[3].end; w++)
+    for (ssize_t k = array_ranges[2].start; k <= array_ranges[2].end; k++)
+    for (ssize_t j = array_ranges[1].start; j <= array_ranges[1].end; j++)
+    for (ssize_t i = array_ranges[0].start; i <= array_ranges[0].end; i++)
+    {
+        sum += arr[i][j][k][w];
+        profiler->num_iters++;
+    }
+
+    arr.free();
+}
+
 
 void bst_pretty()
 {

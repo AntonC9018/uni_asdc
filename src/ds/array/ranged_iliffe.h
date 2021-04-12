@@ -57,11 +57,11 @@ namespace DS
     template<typename T, size_t N_DIM>
     void Ranged_Iliffe_Vector<T, N_DIM>::free()
     {
-        for (size_t i = 0; i < size; i++)
+        for (size_t i = 0; i < size(); i++)
         {
             vectors[i].free();
         }
-        free(vectors);
+        std::free(vectors);
     }
 
     template<typename T>
@@ -115,6 +115,6 @@ namespace DS
     template<typename T>
     void Ranged_Iliffe_Vector<T, 1>::free()
     {
-        free(elements);
+        std::free(elements);
     }
 }

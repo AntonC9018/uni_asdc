@@ -88,6 +88,6 @@ namespace DS
     template<typename T, size_t N_DIM>
     void Raw_Array_Wrapper<T, N_DIM>::free()
     {
-        free(items);
+        std::free(items);
     }
 }

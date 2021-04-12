@@ -37,7 +37,7 @@ namespace DS
     template<typename T, size_t N_DIM>
     size_t Ranged_Iliffe_Vector<T, N_DIM>::size()
     {
-        return (size_t)(range.end - range.start) + 1;
+        return range.length();
     }
 
     template<typename T, size_t N_DIM>
@@ -95,7 +95,7 @@ namespace DS
     template<typename T>
     size_t Ranged_Iliffe_Vector<T, 1>::size()
     {
-        return (size_t)(range.end - range.start) + 1;
+        return range.length();
     }
 
     template<typename T>

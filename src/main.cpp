@@ -30,6 +30,7 @@
 
 #include "ds/array/iliffe.h"
 #include "ds/array/ranged_iliffe.h"
+#include "ds/array/dope_wrapper.h"
 
 void search_tests();
 void search_profile();
@@ -44,6 +45,7 @@ void queue_tests();
 void bst_removal();
 void bst_pretty();
 void vectors_test();
+void dope_vector_test_mode(DS::Major_Order mode);
 
 int main()
 {
@@ -117,6 +119,65 @@ void vectors_test()
             }
         }
     }
+    {
+        dope_vector_test_mode(ROW_MAJOR);
+        dope_vector_test_mode(COL_MAJOR);
+    }
+}
+
+void dope_vector_test_mode(DS::Major_Order mode)
+{
+    DS::Dope_Wrapper<int, 4> arr;
+    arr.set_range(0, { 3,  6}); 
+    arr.set_range(1, { 1,  3}); 
+    arr.set_range(2, {-3, -1});
+    arr.set_range(3, {-5, -3});
+    arr.init(mode); 
+
+    ssize_t indices[4];
+    #define i indices[0]
+    #define j indices[1]
+    #define k indices[2]
+    #define w indices[3]
+    
+    #define ITERATE_ROWS \
+        for (i = arr.start(0); i <= arr.end(0); i++) \
+        for (j = arr.start(1); j <= arr.end(1); j++) \
+        for (k = arr.start(2); k <= arr.end(2); k++) \
+        for (w = arr.start(3); w <= arr.end(3); w++) 
+    
+    #define ITERATE_COLS \
+        for (w = arr.start(3); w <= arr.end(3); w++) \
+        for (k = arr.start(2); k <= arr.end(2); k++) \
+        for (j = arr.start(1); j <= arr.end(1); j++) \
+        for (i = arr.start(0); i <= arr.end(0); i++) 
+
+    size_t el_count = 0;
+
+    if (mode == DS::ROW_MAJOR)
+        ITERATE_ROWS { arr[indices] = el_count++; }
+    else
+        ITERATE_COLS { arr[indices] = el_count++; }
+
+
+    assert(el_count == arr.size());
+    printf("\n");
+
+    ITERATE_ROWS { printf("arr[%2zi][%2zi][%2zi][%2zi] = %i\n", i, j, k, w, arr[indices]); }
+    printf("\n");
+
+    ITERATE_COLS { printf("arr[%2zi][%2zi][%2zi][%2zi] = %i\n", i, j, k, w, arr[indices]); }
+    printf("\n");
+
+    #undef i
+    #undef j
+    #undef k
+
+    // should print the same as ITERATE_ROWS
+    for (size_t i = 0; i < arr.size(); i++)
+    {
+        printf("arr[%zu] = %i\n", i, arr.items[i]);
+    }   
 }
 
 void bst_pretty()

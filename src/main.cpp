@@ -138,12 +138,12 @@ void arrays_test()
     }
 }
 
-static DS::Index_Range array_ranges[] { {3, 6}, {1, 3}, {-3, -1}, {-5, -3} };
+const static DS::Index_Range array_ranges[] { {3, 6}, {1, 3}, {-3, -1}, {-5, -3} };
 
 void arrays_profile()
 {
     using namespace DS;
-    size_t num_experiments = 100000;
+    const size_t num_experiments = 100000;
 
     profiler_perform_experiments(
         "Raw_Array_Wrapper --- ROW/COLUMN MAJOR",
@@ -170,13 +170,13 @@ void arrays_profile()
     );
 
     profiler_perform_experiments(
-        "Iliffe --- ROW MAJOR",
+        "Iliffe --- ROW ITERATION",
         iliffe_profile_rows,
         num_experiments
     );
 
     profiler_perform_experiments(
-        "Iliffe --- COLUMN MAJOR",
+        "Iliffe --- COLUMN ITERATION",
         iliffe_profile_cols,
         num_experiments
     );

@@ -135,6 +135,19 @@ void arrays_test()
 
         array_test_mode<Raw_Array_Wrapper<int, 4>>(ROW_MAJOR);
         array_test_mode<Raw_Array_Wrapper<int, 4>>(COL_MAJOR);
+        
+        // Dope_Vector<4> vec;
+        // vec.ranges[0] = array_ranges[0];
+        // vec.ranges[1] = array_ranges[1];
+        // vec.ranges[2] = array_ranges[2];
+        // vec.ranges[3] = array_ranges[3];
+        // vec.init_cache_col_major();
+
+        // for (size_t i = 0; i < 4; i++)
+        //     printf("D_%zu = %zi\n", i, vec.index_costs[i]);
+        
+        // printf("Suma: %zi\n", vec.index_cost_constant_term);
+        // printf("Lungimea totala: %zi\n", vec.total_length);
     }
 }
 

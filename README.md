@@ -1,4 +1,4 @@
-# ASDC (Algoritme, Structuri de Date, Complexitate)
+# ASDC (Algoritmi, Structuri de Date, Complexitate)
 
 This repository contains assignments, implemented as part of the course **Algoritme, Structuri de Date, Complexitate** (**Algorithms, Data Structures, Complexity**).
 

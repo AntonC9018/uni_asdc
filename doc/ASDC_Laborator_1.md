@@ -887,6 +887,7 @@ bool hmap_has_value(Hash_Map* hm, Record value)
             {
                 return true;
             }
+            bucket = bucket->next_bucket;
         }
     }
     return false;

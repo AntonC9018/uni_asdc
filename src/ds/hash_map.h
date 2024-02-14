@@ -75,6 +75,7 @@ namespace DS
                 {
                     return true;
                 }
+                bucket = bucket->next_bucket;
             }
         }
         return false;
